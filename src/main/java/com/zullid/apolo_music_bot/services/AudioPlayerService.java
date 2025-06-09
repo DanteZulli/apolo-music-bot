@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
@@ -28,5 +29,9 @@ public class AudioPlayerService {
         player = playerManager.createPlayer();
         
         log.info("AudioPlayer initialized successfully");
+    }
+
+    public void addListener(AudioEventListener listener) {
+        player.addListener(listener);
     }
 } 
