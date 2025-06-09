@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.zullid.apolo_music_bot.commands.MusicCommandListener;
 import com.zullid.apolo_music_bot.events.ReadyListener;
 
 import net.dv8tion.jda.api.JDA;
@@ -19,7 +20,7 @@ public class DiscordConfig {
     private String token;
 
     @Bean
-    JDA jdaBuilder(ReadyListener readyListener) {
+    JDA jdaBuilder(ReadyListener readyListener, MusicCommandListener musicCommandListener) {
         return JDABuilder.createDefault(token)
                 .enableIntents(
                     GatewayIntent.GUILD_MESSAGES,
@@ -29,7 +30,7 @@ public class DiscordConfig {
                 )
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setChunkingFilter(ChunkingFilter.ALL)
-                .addEventListeners(readyListener)
+                .addEventListeners(readyListener, musicCommandListener)
                 .build();
     }
 

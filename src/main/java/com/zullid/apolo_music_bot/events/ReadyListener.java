@@ -12,6 +12,6 @@ public class ReadyListener extends ListenerAdapter {
 
     @Override
     public void onReady(ReadyEvent event) {
-        log.info("¡Bot conectado como {}!", event.getJDA().getSelfUser().getAsTag());
+        log.info("Apolo is ready! Connected as {}", event.getJDA().getSelfUser().getAsTag());
     }
 } 
