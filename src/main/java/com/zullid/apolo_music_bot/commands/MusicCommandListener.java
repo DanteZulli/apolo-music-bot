@@ -2,13 +2,19 @@ package com.zullid.apolo_music_bot.commands;
 
 import org.springframework.stereotype.Component;
 
+import com.zullid.apolo_music_bot.services.VoiceChannelService;
+
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MusicCommandListener extends ListenerAdapter {
+    
+    private final VoiceChannelService voiceChannelService;
     
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
@@ -48,15 +54,26 @@ public class MusicCommandListener extends ListenerAdapter {
     }
 
     private void handleJoinCommand(SlashCommandInteractionEvent event) {
-        // TODO: Implementar lógica para unirse al canal de voz
-        log.debug("Join command received");
-        event.reply("Join command in development").queue();
+        if (voiceChannelService.isConnected(event.getGuild())) {
+            event.reply("I'm already in a voice channel!").queue();
+            return;
+        }
+
+        if (voiceChannelService.joinVoiceChannel(event.getMember())) {
+            event.reply("Joined your voice channel!").queue();
+        } else {
+            event.reply("You need to be in a voice channel first!").queue();
+        }
     }
 
     private void handleLeaveCommand(SlashCommandInteractionEvent event) {
-        // TODO: Implementar lógica para salir del canal de voz
-        log.debug("Leave command received");
-        event.reply("Leave command in development").queue();
+        if (!voiceChannelService.isConnected(event.getGuild())) {
+            event.reply("I'm not in a voice channel!").queue();
+            return;
+        }
+
+        voiceChannelService.leaveVoiceChannel(event.getGuild());
+        event.reply("Left the voice channel!").queue();
     }
 
     private void handlePlayCommand(SlashCommandInteractionEvent event) {
