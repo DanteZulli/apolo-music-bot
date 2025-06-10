@@ -14,9 +14,14 @@
   </a>
 
   <h3 align="center">Apolo Music Bot</h3>
+  <p align="center">
+    <a href="https://www.java.com/"><img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"></a>
+    <a href="https://spring.io/"><img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring"></a>
+    <a href="https://maven.apache.org/"><img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="Maven"></a>
+  </p>
 
   <p align="center">
-     A self-hosted, feature-rich music bot for Discord, built with Java using JDA and LavaPlayer. Stream your favorite tunes seamlessly!
+     A self-hosted, feature-rich music bot for Discord, built with Java using <a href="https://github.com/DV8FromTheWorld/JDA">JDA</a> and <a href="https://github.com/lavalink-devs/lavaplayer">LavaPlayer</a>. Stream your favorite tunes seamlessly!
     <br />
     <a href="https://github.com/DanteZulli/apolo-music-bot"><strong>Explore the docs »</strong></a>
     <br />
@@ -26,17 +31,6 @@
     <a href="https://github.com/DanteZulli/apolo-music-bot/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
-
-## Requirements
-
-- Java 21 or higher
-- Maven
-- Discord Bot Token
-- Privileged Intents enabled in the Discord Developer Portal
-
-> [!CAUTION]
-> Copy & Paste Discord **Bot** Token from _"Bot > Token"_. \
-> Not from _"OAuth > Client Secret"_
 
 ## Bot Setup on Discord Developer Portal
 
@@ -109,9 +103,6 @@ Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/Music
 
 This project is licensed under the GPL v3 License. See the `LICENSE` file for details.
 
-> [!IMPORTANT]
-> The purpose of this license is to ensure that this code and any derivative works remain free and open source. Any modifications, distributions, or contributions to this project must comply with the GPL v3 license terms.
-
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/DanteZulli/apolo-music-bot?style=for-the-badge
 [contributors-url]: https://github.com/DanteZulli/apolo-music-bot/graphs/contributors
@@ -123,5 +114,5 @@ This project is licensed under the GPL v3 License. See the `LICENSE` file for de
 [issues-url]: https://github.com/DanteZulli/apolo-music-bot/issues
 [license-shield]: https://img.shields.io/github/license/DanteZulli/apolo-music-bot.svg?style=for-the-badge
 [license-url]: https://github.com/DanteZulli/apolo-music-bot/blob/master/LICENSE
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-shield]: https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white
 [linkedin-url]: https://www.linkedin.com/in/dante-zulli/ 
