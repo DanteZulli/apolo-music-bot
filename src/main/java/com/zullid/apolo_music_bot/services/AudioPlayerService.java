@@ -14,6 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+/**
+ * Service responsible for managing the audio player using Lavaplayer.
+ * 
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class AudioPlayerService {
     
     @Getter

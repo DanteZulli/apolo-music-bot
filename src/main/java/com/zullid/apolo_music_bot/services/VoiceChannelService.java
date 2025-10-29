@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+/**
+ * Service responsible for managing voice channel connections.
+ * 
+ * @see AudioPlayerService
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class VoiceChannelService {
     
     private final AudioPlayerService audioPlayerService;

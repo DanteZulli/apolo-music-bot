@@ -11,6 +11,13 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
+/**
+ * Configuration class for initializing audio-related components.
+ * 
+ * @see AudioPlayerService
+ * @see QueueService
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class AudioConfig {
     
     private final AudioPlayerService audioPlayerService;

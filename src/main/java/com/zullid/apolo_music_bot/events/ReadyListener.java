@@ -8,6 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+/**
+ * Listener for the Ready event when the bot is fully connected and ready.
+ * 
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class ReadyListener extends ListenerAdapter {
 
     @Override

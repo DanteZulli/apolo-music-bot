@@ -15,6 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+/**
+ * Handler for audio player events.
+ * 
+ * @see QueueService
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class AudioEventHandler extends AudioEventAdapter {
     
     private final QueueService queueService;

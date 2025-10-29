@@ -13,6 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+/**
+ * Configuration class for registering music bot commands with JDA.
+ * 
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class MusicCommandConfig {
 
     private final JDA jda;

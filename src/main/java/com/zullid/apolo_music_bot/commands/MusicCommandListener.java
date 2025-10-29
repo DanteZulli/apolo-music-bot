@@ -22,6 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+/**
+ * Listener for handling music-related slash commands.
+ * 
+ * @see VoiceChannelService
+ * @see QueueService
+ * @see AudioPlayerService
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class MusicCommandListener extends ListenerAdapter {
     
     private final VoiceChannelService voiceChannelService;

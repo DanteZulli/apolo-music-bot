@@ -17,6 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+/**
+ * Service responsible for managing the music queue.
+ * 
+ * @see AudioPlayerService
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class QueueService {
     
     private final AudioPlayerService audioPlayerService;

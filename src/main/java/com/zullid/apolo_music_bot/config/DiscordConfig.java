@@ -14,6 +14,11 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 @Configuration
+/**
+ * Configuration class for setting up the JDA instance with necessary intents and event listeners.
+ * 
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class DiscordConfig {
 
     @Value("${discord.bot.token}")
