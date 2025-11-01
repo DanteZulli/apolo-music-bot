@@ -12,39 +12,40 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+@Getter
+@Setter
 @RequiredArgsConstructor
 public class Player {
+
     private final AudioPlayerService audioPlayerService;
     private final QueueService queueService;
     private final VoiceChannelService voiceChannelService;
 
-    @Getter
-    @Setter
     private PlayerState state;
 
     @PostConstruct
     public void init() {
-        this.state = new ReadyState(audioPlayerService, this);
+        this.state = new ReadyState(this);
     }
 
     public void play(SlashCommandInteractionEvent event) {
-        state.onPlay(queueService, voiceChannelService, event);
+        state.onPlay(event);
     }
 
     public void pause(SlashCommandInteractionEvent event) {
-        state.onPause(queueService, voiceChannelService, event);
+        state.onPause(event);
     }
 
     public void resume(SlashCommandInteractionEvent event) {
-        state.onResume(queueService, voiceChannelService, event);
+        state.onResume(event);
     }
 
     public void stop(SlashCommandInteractionEvent event) {
-        state.onStop(queueService, voiceChannelService, event);
+        state.onStop(event);
     }
 
     public void skip(SlashCommandInteractionEvent event) {
-        state.onSkip(queueService, voiceChannelService, event);
+        state.onSkip(event);
     }
 
 }

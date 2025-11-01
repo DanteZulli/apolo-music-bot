@@ -10,25 +10,27 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.zullid.apolo_music_bot.player.Player;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
 import com.zullid.apolo_music_bot.services.QueueService;
-import com.zullid.apolo_music_bot.services.VoiceChannelService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class PlayingState extends PlayerState {
-    private final Player playerContext;
 
-    public PlayingState(AudioPlayerService player, Player playerContext) {
+    private final AudioPlayerService audioPlayerService;
+    private final QueueService queueService;
+
+    PlayingState(Player player) {
         super(player);
-        this.playerContext = playerContext;
+        this.audioPlayerService = player.getAudioPlayerService();
+        this.queueService = player.getQueueService();
     }
 
     @Override
-    public void onPlay(QueueService queueService, VoiceChannelService voiceChannelService, SlashCommandInteractionEvent event) {
+    public void onPlay(SlashCommandInteractionEvent event) {
         String query = event.getOption("query").getAsString();
         event.deferReply().queue();
 
-        player.getPlayerManager().loadItem(query, new AudioLoadResultHandler() {
+        audioPlayerService.getPlayerManager().loadItem(query, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 queueService.addToQueue(track);
@@ -52,43 +54,48 @@ public class PlayingState extends PlayerState {
             @Override
             public void noMatches() {
                 event.getHook().sendMessage("No matches found for: " + query).queue();
+                player.setState(new ReadyState(player));
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
                 event.getHook().sendMessage("Error loading track: " + exception.getMessage()).queue();
                 log.error("Error loading track", exception);
+                player.setState(new ReadyState(player));
             }
         });
     }
 
     @Override
-    public void onPause(QueueService queueService, VoiceChannelService voiceChannelService, SlashCommandInteractionEvent event) {
-        AudioPlayer audioPlayer = player.getPlayer();
+    public void onPause(SlashCommandInteractionEvent event) {
+        // For the moment, we ensure here that something is playing, because we don't
+        // have an empty queue listener yet.
+        AudioPlayer audioPlayer = audioPlayerService.getPlayer();
         if (audioPlayer.getPlayingTrack() == null) {
             event.reply("Nothing is playing!").queue();
+            player.setState(new ReadyState(player));
             return;
         }
         audioPlayer.setPaused(true);
         event.reply("Paused the current track").queue();
-        playerContext.setState(new PausedState(player, playerContext));
+        player.setState(new PausedState(player));
     }
 
     @Override
-    public void onResume(QueueService queueService, VoiceChannelService voiceChannelService, SlashCommandInteractionEvent event) {
+    public void onResume(SlashCommandInteractionEvent event) {
         event.reply("Cannot resume: player is already playing.").queue();
     }
 
     @Override
-    public void onStop(QueueService queueService, VoiceChannelService voiceChannelService, SlashCommandInteractionEvent event) {
+    public void onStop(SlashCommandInteractionEvent event) {
         queueService.clearQueue();
-        player.getPlayer().stopTrack();
+        audioPlayerService.getPlayer().stopTrack();
         event.reply("Stopped playback and cleared the queue").queue();
-        playerContext.setState(new ReadyState(player, playerContext));
+        player.setState(new ReadyState(player));
     }
 
     @Override
-    public void onSkip(QueueService queueService, VoiceChannelService voiceChannelService, SlashCommandInteractionEvent event) {
+    public void onSkip(SlashCommandInteractionEvent event) {
         queueService.skipCurrentTrack();
         event.reply("Skipped to the next track").queue();
     }
