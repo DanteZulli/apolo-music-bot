@@ -1,5 +1,7 @@
 package com.zullid.apolo_music_bot.player;
 
+import org.springframework.stereotype.Component;
+
 import com.zullid.apolo_music_bot.player.state.PlayerState;
 import com.zullid.apolo_music_bot.player.state.ReadyState;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
@@ -14,6 +16,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 @Getter
 @Setter
+@Component
 @RequiredArgsConstructor
 public class Player {
 
@@ -29,23 +32,40 @@ public class Player {
     }
 
     public void play(SlashCommandInteractionEvent event) {
+        checkVoiceChannel(event);
         state.onPlay(event);
     }
 
     public void pause(SlashCommandInteractionEvent event) {
+        checkVoiceChannel(event);
         state.onPause(event);
     }
 
     public void resume(SlashCommandInteractionEvent event) {
+        checkVoiceChannel(event);
         state.onResume(event);
     }
 
     public void stop(SlashCommandInteractionEvent event) {
+        checkVoiceChannel(event);
         state.onStop(event);
     }
 
     public void skip(SlashCommandInteractionEvent event) {
+        checkVoiceChannel(event);
         state.onSkip(event);
+    }
+
+    private void checkVoiceChannel(SlashCommandInteractionEvent event) {
+        if (voiceChannelService.isConnected(event.getGuild())) {
+            return;
+        }
+
+        if (voiceChannelService.joinVoiceChannel(event.getMember())) {
+            event.reply("Joined your voice channel!").queue();
+        } else {
+            event.reply("You need to be in a voice channel first!").queue();
+        }
     }
 
 }
