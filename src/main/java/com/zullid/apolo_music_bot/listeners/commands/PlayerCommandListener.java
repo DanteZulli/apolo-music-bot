@@ -1,4 +1,4 @@
-package com.zullid.apolo_music_bot.commands;
+package com.zullid.apolo_music_bot.listeners.commands;
 
 import org.springframework.stereotype.Component;
 

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.zullid.apolo_music_bot.commands.PlayerCommandListener;
-import com.zullid.apolo_music_bot.events.ReadyListener;
+import com.zullid.apolo_music_bot.listeners.commands.PlayerCommandListener;
+import com.zullid.apolo_music_bot.listeners.events.ReadyListener;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
