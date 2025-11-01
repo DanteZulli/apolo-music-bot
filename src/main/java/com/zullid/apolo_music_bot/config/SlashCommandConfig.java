@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * 
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
-public class MusicCommandConfig {
+public class SlashCommandConfig {
 
     private final JDA jda;
 

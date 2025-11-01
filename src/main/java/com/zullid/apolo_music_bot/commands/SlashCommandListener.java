@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * @see AudioPlayerService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
-public class MusicCommandListener extends ListenerAdapter {
+public class SlashCommandListener extends ListenerAdapter {
     
     private final VoiceChannelService voiceChannelService;
     private final QueueService queueService;
