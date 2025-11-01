@@ -1,4 +1,8 @@
-package com.zullid.apolo_music_bot.services;
+package com.zullid.apolo_music_bot.player.state;
+
+import com.zullid.apolo_music_bot.services.AudioPlayerService;
+import com.zullid.apolo_music_bot.services.QueueService;
+import com.zullid.apolo_music_bot.services.VoiceChannelService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
@@ -7,10 +11,10 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
  *
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
-public abstract class State {
+public abstract class PlayerState {
     protected AudioPlayerService player;
 
-    protected State(AudioPlayerService player) {
+    protected PlayerState(AudioPlayerService player) {
         this.player = player;
     }
 

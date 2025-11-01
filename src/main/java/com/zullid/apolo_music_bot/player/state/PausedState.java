@@ -1,10 +1,14 @@
-package com.zullid.apolo_music_bot.services;
+package com.zullid.apolo_music_bot.player.state;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.zullid.apolo_music_bot.player.Player;
+import com.zullid.apolo_music_bot.services.AudioPlayerService;
+import com.zullid.apolo_music_bot.services.QueueService;
+import com.zullid.apolo_music_bot.services.VoiceChannelService;
+
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
-public class PausedState extends State {
+public class PausedState extends PlayerState {
     private final Player playerContext;
 
     public PausedState(AudioPlayerService player, Player playerContext) {

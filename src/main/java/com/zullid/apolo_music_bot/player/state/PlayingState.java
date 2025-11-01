@@ -1,4 +1,4 @@
-package com.zullid.apolo_music_bot.services;
+package com.zullid.apolo_music_bot.player.state;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -8,11 +8,14 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.zullid.apolo_music_bot.player.Player;
+import com.zullid.apolo_music_bot.services.AudioPlayerService;
+import com.zullid.apolo_music_bot.services.QueueService;
+import com.zullid.apolo_music_bot.services.VoiceChannelService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PlayingState extends State {
+public class PlayingState extends PlayerState {
     private final Player playerContext;
 
     public PlayingState(AudioPlayerService player, Player playerContext) {

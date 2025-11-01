@@ -1,16 +1,15 @@
 package com.zullid.apolo_music_bot.player;
 
+import com.zullid.apolo_music_bot.player.state.PlayerState;
+import com.zullid.apolo_music_bot.player.state.ReadyState;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
 import com.zullid.apolo_music_bot.services.QueueService;
-import com.zullid.apolo_music_bot.services.State;
 import com.zullid.apolo_music_bot.services.VoiceChannelService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import com.zullid.apolo_music_bot.services.ReadyState;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class Player {
 
     @Getter
     @Setter
-    private State state;
+    private PlayerState state;
 
     @PostConstruct
     public void init() {
