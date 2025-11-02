@@ -57,13 +57,8 @@ public class Player {
     }
 
     private void checkVoiceChannel(SlashCommandInteractionEvent event) {
-        if (voiceChannelService.isConnected(event.getGuild())) {
-            return;
-        }
-
-        if (voiceChannelService.joinVoiceChannel(event.getMember())) {
-            event.reply("Joined your voice channel!").queue();
-        } else {
+        if (!voiceChannelService.isConnected(event.getGuild())
+                && !voiceChannelService.joinVoiceChannel(event.getMember())) {
             event.reply("You need to be in a voice channel first!").queue();
         }
     }

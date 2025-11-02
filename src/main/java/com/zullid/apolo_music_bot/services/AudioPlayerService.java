@@ -6,6 +6,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
+
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 
 import jakarta.annotation.PostConstruct;
@@ -30,7 +33,13 @@ public class AudioPlayerService {
     @PostConstruct
     public void init() {
         playerManager = new DefaultAudioPlayerManager();
-        AudioSourceManagers.registerRemoteSources(playerManager);
+        
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager());
+        AudioSourceManagers.registerRemoteSources(
+            playerManager,
+            YoutubeAudioSourceManager.class
+        );
+
         player = playerManager.createPlayer();
         
         log.info("AudioPlayer initialized successfully");
