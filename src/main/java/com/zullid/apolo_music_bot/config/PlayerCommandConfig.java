@@ -25,7 +25,7 @@ public class PlayerCommandConfig {
     @PostConstruct
     public void registerCommands() {
         SlashCommandData playCommand = Commands.slash("play", "Plays a song from any source or adds it to the queue")
-                .addOption(net.dv8tion.jda.api.interactions.commands.OptionType.STRING, "query", "URL or song name", true);
+                .addOption(net.dv8tion.jda.api.interactions.commands.OptionType.STRING, "query", "URL", true);
         
         SlashCommandData pauseCommand = Commands.slash("pause", "Pauses the current playback");
         
