@@ -8,9 +8,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Component
-@RequiredArgsConstructor
 /**
  * Listener for handling music-related slash commands.
  * 
@@ -19,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
  * @see AudioPlayerService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class PlayerCommandListener extends ListenerAdapter {
 
     private final Player player;

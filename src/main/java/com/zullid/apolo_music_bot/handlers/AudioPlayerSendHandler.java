@@ -8,7 +8,8 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 
 /**
- * Audio send handler that provides audio frames from the Lavaplayer AudioPlayer to JDA.
+ * Audio send handler that provides audio frames from the Lavaplayer AudioPlayer
+ * to JDA.
  * 
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */

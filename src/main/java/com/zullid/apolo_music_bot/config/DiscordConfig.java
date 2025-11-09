@@ -13,12 +13,13 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
-@Configuration
 /**
- * Configuration class for setting up the JDA instance with necessary intents and event listeners.
+ * Configuration class for setting up the JDA instance with necessary intents
+ * and event listeners.
  * 
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
+@Configuration
 public class DiscordConfig {
 
     @Value("${discord.bot.token}")
@@ -28,11 +29,10 @@ public class DiscordConfig {
     JDA jdaBuilder(ReadyListener readyListener, PlayerCommandListener playerCommandListener) {
         return JDABuilder.createDefault(token)
                 .enableIntents(
-                    GatewayIntent.GUILD_MESSAGES,
-                    GatewayIntent.GUILD_MEMBERS,
-                    GatewayIntent.MESSAGE_CONTENT,
-                    GatewayIntent.GUILD_VOICE_STATES
-                )
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_VOICE_STATES)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .addEventListeners(readyListener, playerCommandListener)

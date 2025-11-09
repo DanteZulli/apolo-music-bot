@@ -12,34 +12,34 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@Service
-@RequiredArgsConstructor
 /**
  * Service responsible for managing voice channel connections.
  * 
  * @see AudioPlayerService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
+@Slf4j
+@Service
+@RequiredArgsConstructor
 public class VoiceChannelService {
-    
+
     private final AudioPlayerService audioPlayerService;
-    
+
     public boolean joinVoiceChannel(Member member) {
         if (member.getVoiceState() == null || !member.getVoiceState().inAudioChannel()) {
             return false;
         }
-        
+
         VoiceChannel voiceChannel = member.getVoiceState().getChannel().asVoiceChannel();
         AudioManager audioManager = member.getGuild().getAudioManager();
-        
+
         audioManager.setSendingHandler(new AudioPlayerSendHandler(audioPlayerService.getPlayer()));
         audioManager.openAudioConnection(voiceChannel);
-        
+
         log.info("Bot joined voice channel: {}", voiceChannel.getName());
         return true;
     }
-    
+
     public void leaveVoiceChannel(Guild guild) {
         AudioManager audioManager = guild.getAudioManager();
         if (audioManager.isConnected()) {
@@ -47,8 +47,8 @@ public class VoiceChannelService {
             log.info("Bot left voice channel in guild: {}", guild.getName());
         }
     }
-    
+
     public boolean isConnected(Guild guild) {
         return guild.getAudioManager().isConnected();
     }
-} 
+}

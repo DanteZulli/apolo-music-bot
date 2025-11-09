@@ -9,8 +9,6 @@ import com.zullid.apolo_music_bot.services.QueueService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-@Configuration
-@RequiredArgsConstructor
 /**
  * Configuration class for initializing audio-related components.
  * 
@@ -18,14 +16,16 @@ import lombok.RequiredArgsConstructor;
  * @see QueueService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
+@Configuration
+@RequiredArgsConstructor
 public class AudioConfig {
-    
+
     private final AudioPlayerService audioPlayerService;
     private final QueueService queueService;
-    
+
     @PostConstruct
     public void init() {
         AudioEventHandler eventHandler = new AudioEventHandler(queueService);
         audioPlayerService.addListener(eventHandler);
     }
-} 
+}
