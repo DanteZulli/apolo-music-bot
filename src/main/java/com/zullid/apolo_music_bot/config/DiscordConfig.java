@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.zullid.apolo_music_bot.listeners.commands.PlayerCommandListener;
 import com.zullid.apolo_music_bot.listeners.events.ReadyListener;
-import com.zullid.apolo_music_bot.listeners.events.VoiceStateListener;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -23,22 +22,21 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 @Configuration
 public class DiscordConfig {
 
-    @Value("${discord.bot.token}")
-    private String token;
+        @Value("${discord.bot.token}")
+        private String token;
 
-    @Bean
-    JDA jdaBuilder(ReadyListener readyListener, PlayerCommandListener playerCommandListener,
-            VoiceStateListener voiceStateListener) {
-        return JDABuilder.createDefault(token)
-                .enableIntents(
-                        GatewayIntent.GUILD_MESSAGES,
-                        GatewayIntent.GUILD_MEMBERS,
-                        GatewayIntent.MESSAGE_CONTENT,
-                        GatewayIntent.GUILD_VOICE_STATES)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .setChunkingFilter(ChunkingFilter.ALL)
-                .addEventListeners(readyListener, playerCommandListener, voiceStateListener)
-                .build();
-    }
+        @Bean
+        JDA jdaBuilder(ReadyListener readyListener, PlayerCommandListener playerCommandListener) {
+                return JDABuilder.createDefault(token)
+                                .enableIntents(
+                                                GatewayIntent.GUILD_MESSAGES,
+                                                GatewayIntent.GUILD_MEMBERS,
+                                                GatewayIntent.MESSAGE_CONTENT,
+                                                GatewayIntent.GUILD_VOICE_STATES)
+                                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                                .setChunkingFilter(ChunkingFilter.ALL)
+                                .addEventListeners(readyListener, playerCommandListener)
+                                .build();
+        }
 
 }
