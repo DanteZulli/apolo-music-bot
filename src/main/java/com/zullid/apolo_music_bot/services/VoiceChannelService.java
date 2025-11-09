@@ -35,6 +35,7 @@ public class VoiceChannelService {
 
         audioManager.setSendingHandler(new AudioPlayerSendHandler(audioPlayerService.getPlayer()));
         audioManager.openAudioConnection(voiceChannel);
+        audioManager.setSelfDeafened(true);
 
         log.info("Bot joined voice channel: {}", voiceChannel.getName());
         return true;
@@ -43,6 +44,7 @@ public class VoiceChannelService {
     public void leaveVoiceChannel(Guild guild) {
         AudioManager audioManager = guild.getAudioManager();
         if (audioManager.isConnected()) {
+            audioManager.setSelfDeafened(false);
             audioManager.closeAudioConnection();
             log.info("Bot left voice channel in guild: {}", guild.getName());
         }
