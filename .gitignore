@@ -32,5 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
-### Local env files ###
+### Local env ###
+.env
+.envrc
 src/main/resources/application-dev.properties
+
+### Aider ###
+.aider*
