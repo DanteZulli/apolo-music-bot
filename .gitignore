@@ -39,3 +39,6 @@ src/main/resources/application-dev.properties
 
 ### Aider ###
 .aider*
+
+### Draw.io ###
+.bkp
