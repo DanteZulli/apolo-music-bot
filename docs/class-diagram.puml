@@ -1,0 +1,156 @@
+@startuml Architecture Overview
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+package "PlayerP" {
+
+    class Player {
+        - state : PlayerState
+        + play(event): void
+        + pause(event): void
+        + resume(event): void
+        + stop(event): void
+        + skip(event): void
+        - checkVoiceChannel(event): void
+    }
+
+    package "State" {
+        abstract class PlayerState {
+            # player: Player
+            {abstract} + onPlay(event): void
+            {abstract} + onPause(event): void
+            {abstract} + onResume(event): void
+            {abstract} + onStop(event): void
+            {abstract} + onSkip(event): void
+        }
+
+        class PlayingState {
+            + onPlay(event): void
+            + onPause(event): void
+            + onResume(event): void
+            + onStop(event): void
+            + onSkip(event): void
+        }
+
+        class PausedState {
+            + onPlay(event): void
+            + onPause(event): void
+            + onResume(event): void
+            + onStop(event): void
+            + onSkip(event): void
+        }
+
+        class ReadyState {
+            + onPlay(event): void
+            + onPause(event): void
+            + onResume(event): void
+            + onStop(event): void
+            + onSkip(event): void
+        }
+    }
+}
+
+
+
+package "Services" {
+
+    class AudioPlayerService {
+        - playerManager : AudioPlayerManager
+        - player : AudioPlayer
+        + addListener(listener): void
+    }
+
+    class QueueService {
+        - audioPlayerService : AudioPlayerService
+        - queue : BlockingQueue<AudioTrack>
+        + addToQueue(track) : void
+        + skipCurrentTrack() : void
+        + playNextTrack() : void
+        + clearQueue() : void
+        + getQueueList() : List<AudioTrack>
+        + isQueueEmpty() : boolean
+        + getQueueSize() : int
+    }
+
+    class VoiceChannelService {
+        - audioPlayerService : AudioPlayerService
+        + joinVoiceChannel(member) : boolean
+        + leaveVoiceChannel(guild) : void
+        + isConnected(guild) : boolean
+    }
+}
+
+package "Listeners" {
+
+    package "Commands" {
+        class PlayerCommandListener {
+            - player : Player
+            + onSlashCommandInteraction(event) : void
+        }
+    }
+
+    package "Events" {
+        class ReadyListener {
+            + onReady(event) : void
+        }
+    }
+}
+
+package "Handlers" {
+
+    class AudioEventHandler {
+        - queueService : QueueService
+        + onTrackEnd(player, track, endReason): void
+        + onTrackStart(player, track): void
+        + onPlayerPause(player): void
+        + onPlayerResume(player): void
+    }
+
+    class AudioPlayerSendHandler {
+        - audioPlayer : AudioPlayer
+        - audioFrame : lastFrame
+        + canProvide(): boolean
+        + provide20MsAudio(): ByteBuffer
+        + isOpus(): boolean
+    }
+}
+
+package "Config" {
+
+    class AudioConfig {
+        - audioPlayerService : AudioPlayerService
+        - queueService : QueueService
+        + init() : void
+    }
+
+    class DiscordConfig {
+        - token : String
+        + jdaBuilder(listeners...) : JDA
+    }
+
+    class PlayerCommandConfig {
+        - jda : JDA
+        + registerCommands() : void
+    }
+}
+
+' Relationships
+
+' Inheritance (State extends PlayerState)
+PlayerState <|-- PlayingState
+PlayerState <|-- PausedState
+PlayerState <|-- ReadyState
+
+' Association (Player has State)
+Player --> PlayerState : Has
+
+' Service Associations
+QueueService --> AudioPlayerService
+VoiceChannelService --> AudioPlayerService
+PlayerCommandListener --> Player
+AudioEventHandler --> QueueService
+AudioConfig --> AudioPlayerService
+AudioConfig --> QueueService
+
+@enduml
