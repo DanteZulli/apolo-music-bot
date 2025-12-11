@@ -78,14 +78,11 @@ mvn spring-boot:run
 
 ## Usage
 
-- `/join`: Connects the bot to your voice channel
-- `/leave`: Disconnects the bot from the voice channel
 - `/play <query>`: Plays a song from any source or adds it to the queue
 - `/pause`: Pauses the current playback
 - `/resume`: Resumes the paused playback
 - `/stop`: Stops the playback and clears the queue
 - `/skip`: Skips the current song and moves to the next one in the queue
-- `/queue`: Displays the current song queue
 - `/help`: Displays a list of available commands and their usage
 
 ## Acknowledgments
@@ -93,11 +90,10 @@ mvn spring-boot:run
 If you like this bot or find the project interesting, don't forget to check out the libraries that made it possible and drop them a star.
 
 * [JDA](https://github.com/DV8FromTheWorld/JDA) - The Java library for Discord API
-* [LavaPlayer](https://github.com/lavalink-devs/lavaplayer) - Audio player library for Discord bots
-* [Spring Boot](https://spring.io/projects/spring-boot) - The framework used for building the application
-* [Discord Developer Portal](https://discord.com/developers/applications) - For bot creation and management
+* [LavaPlayer](https://github.com/lavalink-devs/lavaplayer) - Audio player library for Discord bots. We also use the [youtube-source](https://github.com/lavalink-devs/youtube-source) manager.
+  * Special thanks to the [original LavaPlayer](https://github.com/sedmelluq/lavaplayer), which inspired us to start building this bot before migrating to the fork.
 
-Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/MusicBot) and [FredBoat](https://github.com/freyacodes/archived-bot/), whose open-source projects were a great reference and learning resource.
+Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/MusicBot) and [FredBoat](https://github.com/freyacodes/archived-bot/), whose open-source projects served as excellent references and learning resources.
 
 ## License
 
