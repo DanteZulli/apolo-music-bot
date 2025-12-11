@@ -47,6 +47,9 @@ public class PlayerCommandListener extends ListenerAdapter {
             case "resume":
                 player.resume(event);
                 break;
+            case "help":
+                player.help(event);
+                break;
             default:
                 event.reply("Command not recognized").setEphemeral(true).queue();
         }

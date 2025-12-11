@@ -43,13 +43,16 @@ public class PlayerCommandConfig {
                 SlashCommandData skipCommand = Commands.slash("skip",
                                 "Skips the current song and moves to the next one in the queue");
 
+                SlashCommandData helpCommand = Commands.slash("help", "Shows available commands and their descriptions");
+
                 jda.updateCommands()
                                 .addCommands(
                                                 playCommand,
                                                 pauseCommand,
                                                 resumeCommand,
                                                 stopCommand,
-                                                skipCommand)
+                                                skipCommand,
+                                                helpCommand)
                                 .queue(success -> log.info("Commands registered successfully"),
                                                 error -> log.error("Error registering commands: {}",
                                                                 error.getMessage()));

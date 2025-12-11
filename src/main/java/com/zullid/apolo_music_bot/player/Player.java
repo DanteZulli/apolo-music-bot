@@ -66,6 +66,20 @@ public class Player {
         state.onSkip(event);
     }
 
+    public void help(SlashCommandInteractionEvent event) {
+        String helpMessage = """
+                **Available Commands:**
+
+                `/play <query>` - Plays a song from any source or adds it to the queue
+                `/pause` - Pauses the current playback
+                `/resume` - Resumes the paused playback
+                `/stop` - Stops the playback and clears the queue
+                `/skip` - Skips the current song and moves to the next one in the queue
+                `/help` - Shows this help message
+                """;
+        event.reply(helpMessage).setEphemeral(true).queue();
+    }
+
     private void checkVoiceChannel(SlashCommandInteractionEvent event) {
         if (!voiceChannelService.isConnected(event.getGuild())
                 && !voiceChannelService.joinVoiceChannel(event.getMember())) {
