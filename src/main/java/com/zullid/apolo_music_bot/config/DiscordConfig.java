@@ -16,7 +16,12 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 /**
  * Configuration class for setting up the JDA instance with necessary intents
  * and event listeners.
- * 
+ * <p>
+ * This class configures the JDA (Java Discord API) instance with the bot token,
+ * enables required gateway intents for voice states and messages, sets member cache policy,
+ * and registers event listeners for handling Discord events.
+ * </p>
+ *
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
 @Configuration

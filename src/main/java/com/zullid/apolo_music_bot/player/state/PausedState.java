@@ -7,6 +7,15 @@ import com.zullid.apolo_music_bot.services.QueueService;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+/**
+ * State representing the player is paused.
+ * <p>
+ * In this state, the player can resume playback, stop and clear the queue,
+ * but cannot play new tracks, pause (already paused), or skip.
+ * </p>
+ *
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class PausedState extends PlayerState {
 
     private final AudioPlayerService audioPlayerService;
@@ -30,14 +39,7 @@ public class PausedState extends PlayerState {
 
     @Override
     public void onResume(SlashCommandInteractionEvent event) {
-        // For the moment, we ensure here that something is playing, because we don't
-        // have an empty queue listener yet.
         AudioPlayer audioPlayer = audioPlayerService.getPlayer();
-        if (audioPlayer.getPlayingTrack() == null) {
-            event.reply("Nothing is playing!").queue();
-            player.setState(new ReadyState(player));
-            return;
-        }
         audioPlayer.setPaused(false);
         event.reply("Resumed the current track").queue();
         player.setState(new PlayingState(player));

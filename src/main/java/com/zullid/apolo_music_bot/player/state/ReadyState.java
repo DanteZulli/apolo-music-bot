@@ -4,6 +4,15 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 
 import com.zullid.apolo_music_bot.player.Player;
 
+/**
+ * State representing the player is ready but not playing.
+ * <p>
+ * In this state, the player can start playing a new track, but cannot pause,
+ * resume, stop (already stopped), or skip (nothing playing).
+ * </p>
+ *
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 public class ReadyState extends PlayerState {
 
     public ReadyState(Player player) {

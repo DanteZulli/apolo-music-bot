@@ -10,10 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listener for handling music-related slash commands.
- * 
- * @see VoiceChannelService
- * @see QueueService
- * @see AudioPlayerService
+ * <p>
+ * This class extends {@link net.dv8tion.jda.api.hooks.ListenerAdapter} to listen
+ * for slash command interactions in Discord guilds. It delegates command handling
+ * to the {@link Player} instance based on the command name.
+ * </p>
+ *
+ * @see Player
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
 @Slf4j

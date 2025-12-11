@@ -14,7 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service responsible for managing voice channel connections.
- * 
+ * <p>
+ * This service handles joining and leaving voice channels in Discord guilds,
+ * setting up the audio sending handler, and checking connection status.
+ * </p>
+ *
  * @see AudioPlayerService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */

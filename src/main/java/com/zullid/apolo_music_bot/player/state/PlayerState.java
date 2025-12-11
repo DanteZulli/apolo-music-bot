@@ -4,7 +4,11 @@ import com.zullid.apolo_music_bot.player.Player;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 /**
- * Common interface for all states.
+ * Abstract base class for player states in the State pattern.
+ * <p>
+ * Defines the interface for handling slash commands based on the current playback state.
+ * Each concrete state implements these methods to provide state-specific behavior.
+ * </p>
  *
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */

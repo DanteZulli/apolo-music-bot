@@ -101,6 +101,8 @@ package "Handlers" {
 
     class AudioEventHandler {
         - queueService : QueueService
+        - audioPlayerService : AudioPlayerService
+        - player : Player
         + onTrackEnd(player, track, endReason): void
         + onTrackStart(player, track): void
         + onPlayerPause(player): void
@@ -120,7 +122,7 @@ package "Config" {
 
     class AudioConfig {
         - audioPlayerService : AudioPlayerService
-        - queueService : QueueService
+        - audioEventHandler : AudioEventHandler
         + init() : void
     }
 
@@ -150,7 +152,9 @@ QueueService --> AudioPlayerService
 VoiceChannelService --> AudioPlayerService
 PlayerCommandListener --> Player
 AudioEventHandler --> QueueService
+AudioEventHandler --> AudioPlayerService
+AudioEventHandler --> Player
 AudioConfig --> AudioPlayerService
-AudioConfig --> QueueService
+AudioConfig --> AudioEventHandler
 
 @enduml

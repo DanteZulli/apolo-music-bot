@@ -17,7 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service responsible for managing the audio player using Lavaplayer.
- * 
+ * <p>
+ * This service initializes the AudioPlayerManager and AudioPlayer, registers
+ * audio source managers for YouTube and remote sources, and provides methods
+ * to add event listeners to the player.
+ * </p>
+ *
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
 @Slf4j

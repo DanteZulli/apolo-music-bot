@@ -14,6 +14,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+/**
+ * The main player component managing music playback states.
+ * <p>
+ * This class implements the State pattern to handle different playback states
+ * (Ready, Playing, Paused). It delegates command handling to the current state
+ * and ensures the user is in a voice channel before executing commands.
+ * </p>
+ *
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 @Getter
 @Setter
 @Component

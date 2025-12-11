@@ -13,6 +13,16 @@ import com.zullid.apolo_music_bot.services.QueueService;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * State representing the player is actively playing music.
+ * <p>
+ * In this state, the player can add tracks to the queue, pause playback,
+ * stop and clear the queue, or skip to the next track. Resume is not allowed
+ * since the player is already playing.
+ * </p>
+ *
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 @Slf4j
 public class PlayingState extends PlayerState {
 
@@ -68,14 +78,7 @@ public class PlayingState extends PlayerState {
 
     @Override
     public void onPause(SlashCommandInteractionEvent event) {
-        // For the moment, we ensure here that something is playing, because we don't
-        // have an empty queue listener yet.
         AudioPlayer audioPlayer = audioPlayerService.getPlayer();
-        if (audioPlayer.getPlayingTrack() == null) {
-            event.reply("Nothing is playing!").queue();
-            player.setState(new ReadyState(player));
-            return;
-        }
         audioPlayer.setPaused(true);
         event.reply("Paused the current track").queue();
         player.setState(new PausedState(player));

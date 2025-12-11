@@ -16,7 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service responsible for managing the music queue.
- * 
+ * <p>
+ * This service handles adding tracks to the queue, playing the next track,
+ * skipping tracks, clearing the queue, and checking queue status. It uses
+ * a BlockingQueue to store AudioTrack instances.
+ * </p>
+ *
  * @see AudioPlayerService
  * @author Dante Zulli (dantezulli2004@gmail.com)
  */
