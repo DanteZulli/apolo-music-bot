@@ -62,19 +62,33 @@ git clone https://github.com/DanteZulli/apolo-music-bot.git
 cd apolo-music-bot
 ```
 
-2. Create an `application.properties` file in `src/main/resources/` with your Discord bot token:
-```properties
-discord.bot.token=your_discord_token_here
+2. Configure your environment:
+
+We recommend using [direnv](https://direnv.net/) with a `.envrc` file for a more convenient setup (over than overriding token values in `docker-compose.yml` or `.properties` files). This configuration is required for both local execution and Docker/Podman.
+
+```bash
+# .envrc
+export DISCORD_BOT_TOKEN=your_discord_token_here
 ```
 
-> [!NOTE]
-> For development purposes, you can create an `application-dev.properties` file (which is gitignored) to override the default configuration. This is useful for keeping your development token separate from the main configuration. You can also use environment variables or other Spring Boot configuration methods.
+### Local Execution
 
-3. Build and run the project:
+Build and run the project using Maven:
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
+
+### Docker / Podman
+
+The project is fully dockerized. You can build and run the bot using Docker Compose:
+
+```bash
+docker compose up --build -d
+```
+
+> [!NOTE]
+> Image references use full registry paths to ensure compatibility with [Podman](https://podman.io/) and environments where `unqualified-search-registries` are not configured (such as [Debian](https://wiki.debian.org/Podman))
 
 ## Usage
 
