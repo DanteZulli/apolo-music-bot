@@ -1,0 +1,7 @@
+services:
+  apolo-music-bot:
+    build: .
+    container_name: apolo-music-bot
+    restart: unless-stopped
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}

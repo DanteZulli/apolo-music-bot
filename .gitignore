@@ -35,4 +35,3 @@ build/
 ### Local env ###
 .env
 .envrc
-src/main/resources/application-dev.properties
