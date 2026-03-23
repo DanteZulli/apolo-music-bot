@@ -31,12 +31,21 @@ public class VoiceChannelService {
 
     public boolean joinVoiceChannel(Member member) {
         if (member.getVoiceState() == null || !member.getVoiceState().inAudioChannel()) {
+            log.warn("User is not in a voice channel");
             return false;
         }
 
-        VoiceChannel voiceChannel = member.getVoiceState().getChannel().asVoiceChannel();
         AudioManager audioManager = member.getGuild().getAudioManager();
+        
+        if (audioManager.isConnected()) {
+            log.info("Already connected to voice channel, skipping join");
+            return true;
+        }
 
+        VoiceChannel voiceChannel = member.getVoiceState().getChannel().asVoiceChannel();
+        
+        log.info("Joining voice channel: {} (guild: {})", voiceChannel.getName(), member.getGuild().getName());
+        
         audioManager.setSendingHandler(new AudioPlayerSendHandler(audioPlayerService.getPlayer()));
         audioManager.openAudioConnection(voiceChannel);
         audioManager.setSelfDeafened(true);

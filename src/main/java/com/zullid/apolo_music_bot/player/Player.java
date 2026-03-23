@@ -12,7 +12,10 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+
+@Slf4j
 
 /**
  * The main player component managing music playback states.
@@ -81,6 +84,10 @@ public class Player {
     }
 
     private void checkVoiceChannel(SlashCommandInteractionEvent event) {
+        log.info("checkVoiceChannel called - isConnected: {} | userInChannel: {}", 
+            voiceChannelService.isConnected(event.getGuild()),
+            event.getMember().getVoiceState() != null && event.getMember().getVoiceState().inAudioChannel());
+        
         if (!voiceChannelService.isConnected(event.getGuild())
                 && !voiceChannelService.joinVoiceChannel(event.getMember())) {
             event.reply("You need to be in a voice channel first!").queue();

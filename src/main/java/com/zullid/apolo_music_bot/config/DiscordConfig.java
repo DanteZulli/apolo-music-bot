@@ -1,17 +1,17 @@
 package com.zullid.apolo_music_bot.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
+import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.zullid.apolo_music_bot.listeners.commands.PlayerCommandListener;
 import com.zullid.apolo_music_bot.listeners.events.ReadyListener;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.audio.AudioModuleConfig;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for setting up the JDA instance with necessary intents
@@ -40,8 +40,10 @@ public class DiscordConfig {
                                                 GatewayIntent.GUILD_VOICE_STATES)
                                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                                 .setChunkingFilter(ChunkingFilter.ALL)
+                                .setAudioModuleConfig(
+                                                new AudioModuleConfig().withDaveSessionFactory(
+                                                                new JDaveSessionFactory()))
                                 .addEventListeners(readyListener, playerCommandListener)
                                 .build();
         }
-
 }
