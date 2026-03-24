@@ -45,6 +45,8 @@ public class PlayerCommandConfig {
 
                 SlashCommandData helpCommand = Commands.slash("help", "Shows available commands and their descriptions");
 
+                SlashCommandData queueCommand = Commands.slash("queue", "Shows the current queue");
+
                 jda.updateCommands()
                                 .addCommands(
                                                 playCommand,
@@ -52,7 +54,8 @@ public class PlayerCommandConfig {
                                                 resumeCommand,
                                                 stopCommand,
                                                 skipCommand,
-                                                helpCommand)
+                                                helpCommand,
+                                                queueCommand)
                                 .queue(success -> log.info("Commands registered successfully"),
                                                 error -> log.error("Error registering commands: {}",
                                                                 error.getMessage()));

@@ -112,6 +112,8 @@ The player uses a State pattern:
 - Always check `event.isFromGuild()` in guild commands
 - Use `setEphemeral(true)` for help/error messages that should only be visible to the user
 - Use `SlashCommandInteractionEvent.reply().queue()` for async responses
+- **Discord Limits**: Be mindful of the **2000-character limit** for responses. Use truncation (e.g., for track titles) when building long messages like the `/queue` list.
+- **DAVE Protocol**: As of March 2026, Discord requires **DAVE (End-to-End Encryption)** for voice. This requires JDA 6.3.2+ and JDave libraries. **DO NOT** downgrade below these versions or voice connections will fail.
 
 ### Java Features
 
@@ -134,12 +136,14 @@ Available slash commands:
 - `/resume` - Resume playback
 - `/stop` - Stop and clear queue
 - `/skip` - Skip current song
+- `/queue` - Show current queue and playing track
 - `/help` - Show help message
 
 ### Key Dependencies
 
-- **JDA 6.1.0** - Discord API wrapper
-- **LavaPlayer 2.2.4** - Audio player library
-- **LavaLink YouTube 1.14.0** - YouTube source
+- **JDA 6.3.2** - Discord API wrapper (supports DAVE protocol)
+- **LavaPlayer 2.2.6** - Audio player library
+- **LavaLink YouTube 1.18.0** - YouTube source
+- **JDave 0.1.7** - Voice encryption (required for March 2026 voice support)
 - **Spring Boot 3.5.8** - Application framework
 - **Lombok** - Code generation

@@ -78,9 +78,50 @@ public class Player {
                 `/resume` - Resumes the paused playback
                 `/stop` - Stops the playback and clears the queue
                 `/skip` - Skips the current song and moves to the next one in the queue
+                `/queue` - Shows the current queue
                 `/help` - Shows this help message
                 """;
         event.reply(helpMessage).setEphemeral(true).queue();
+    }
+
+    public void queue(SlashCommandInteractionEvent event) {
+        var player = audioPlayerService.getPlayer();
+        var currentTrack = player.getPlayingTrack();
+        var queueList = queueService.getQueueList();
+
+        StringBuilder sb = new StringBuilder();
+
+        // N = 32 based on calculation to fit 51 tracks (1 playing + 50 queue) within 2000 chars
+        final int MAX_TITLE_LENGTH = 32;
+
+        if (currentTrack != null) {
+            sb.append("**Now Playing:** ").append(truncate(currentTrack.getInfo().title, MAX_TITLE_LENGTH)).append("\n\n");
+        } else {
+            sb.append("**Now Playing:** Nothing\n\n");
+        }
+
+        sb.append("**Queue:**\n");
+
+        if (queueList.isEmpty()) {
+            sb.append("  (empty)");
+        } else {
+            int maxDisplay = Math.min(50, queueList.size());
+            for (int i = 0; i < maxDisplay; i++) {
+                sb.append(i + 1).append(". ").append(truncate(queueList.get(i).getInfo().title, MAX_TITLE_LENGTH)).append("\n");
+            }
+
+            int remaining = queueList.size() - 50;
+            if (remaining > 0) {
+                sb.append("... and ").append(remaining).append(" more song(s)");
+            }
+        }
+
+        event.reply(sb.toString()).setEphemeral(true).queue();
+    }
+
+    private String truncate(String text, int maxLength) {
+        if (text == null) return "Unknown Title";
+        return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;
     }
 
     private void checkVoiceChannel(SlashCommandInteractionEvent event) {
