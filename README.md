@@ -81,11 +81,18 @@ mvn spring-boot:run
 
 ### Docker / Podman
 
-The project is fully dockerized. You can build and run the bot using Docker Compose:
+The project is fully dockerized. You can build and run the bot using Docker Compose or Podman Compose:
 
 ```bash
+# Build and start in background
 docker compose up --build -d
+
+# Using Podman
+podman compose up --build -d
 ```
+
+> [!TIP]
+> If you notice the bot is running an old version even after code changes, use the `--build` flag or manually remove the old image with `podman image rm apolo-music-bot:latest` before running `up`. We've configured an explicit image name in `docker-compose.yml` to ensure consistency.
 
 > [!NOTE]
 > Image references use full registry paths to ensure compatibility with [Podman](https://podman.io/) and environments where `unqualified-search-registries` are not configured (such as [Debian](https://wiki.debian.org/Podman))

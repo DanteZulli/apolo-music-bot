@@ -1,6 +1,7 @@
 services:
   apolo-music-bot:
     build: .
+    image: apolo-music-bot:latest
     container_name: apolo-music-bot
     restart: unless-stopped
     environment:
