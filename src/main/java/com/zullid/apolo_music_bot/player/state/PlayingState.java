@@ -49,17 +49,20 @@ public class PlayingState extends PlayerState {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                if (playlist.isSearchResult()) {
-                    AudioTrack track = playlist.getTracks().get(0);
+                if (playlist.isSearchResult() || query.contains("list=RD")) {
+                    // Search results or automatic mixes: just add the current/first track
+                    AudioTrack track = playlist.getSelectedTrack() != null ? playlist.getSelectedTrack() : playlist.getTracks().get(0);
                     queueService.addToQueue(track);
                     event.getHook().sendMessage("Added to queue: " + track.getInfo().title).queue();
                 } else {
+                    // Regular playlists (PL...): add all tracks
                     for (AudioTrack track : playlist.getTracks()) {
                         queueService.addToQueue(track);
                     }
                     event.getHook().sendMessage("Added " + playlist.getTracks().size() + " tracks to queue").queue();
                 }
             }
+
 
             @Override
             public void noMatches() {
