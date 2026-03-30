@@ -12,13 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class AudioEventHandlerTest {
 
     @Mock
@@ -78,9 +75,6 @@ class AudioEventHandlerTest {
     void onTrackEnd_withReasonFinishedAndQueueNotEmpty_doesNotTransitionToReadyState() {
         AudioTrackEndReason reason = AudioTrackEndReason.FINISHED;
         when(queueService.isQueueEmpty()).thenReturn(false);
-        when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
-        AudioTrack nextTrack = mock(AudioTrack.class);
-        when(audioPlayer.getPlayingTrack()).thenReturn(nextTrack);
 
         handler.onTrackEnd(audioPlayer, track, reason);
 
@@ -108,7 +102,9 @@ class AudioEventHandlerTest {
 
     @Test
     void onTrackStart_logsTrackTitle() {
-        when(track.getInfo()).thenReturn(mock(com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo.class));
+        com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo info =
+            new com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo("Test Track", "test", 0L, "id", false, null);
+        when(track.getInfo()).thenReturn(info);
 
         handler.onTrackStart(audioPlayer, track);
     }

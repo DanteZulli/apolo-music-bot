@@ -147,4 +147,20 @@ class QueueServiceTest {
 
         assertTrue(queueService.isQueueEmpty());
     }
+
+    @Test
+    void playNextTrack_whenQueueHasTracks_playsNextTrack() {
+        AudioTrack playingTrack = createMockTrack("Playing");
+        AudioTrack queuedTrack = createMockTrack("Queued");
+
+        when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
+        when(audioPlayer.getPlayingTrack()).thenReturn(playingTrack);
+
+        queueService.addToQueue(queuedTrack);
+
+        queueService.playNextTrack();
+
+        verify(audioPlayer).playTrack(queuedTrack);
+        assertEquals(0, queueService.getQueueSize());
+    }
 }

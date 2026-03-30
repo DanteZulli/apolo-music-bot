@@ -2,19 +2,15 @@ package com.zullid.apolo_music_bot.listeners.commands;
 
 import com.zullid.apolo_music_bot.player.Player;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class PlayerCommandListenerTest {
 
     @Mock
@@ -22,9 +18,6 @@ class PlayerCommandListenerTest {
 
     @Mock
     private SlashCommandInteractionEvent event;
-
-    @Mock
-    private Command.Choice choice;
 
     private PlayerCommandListener listener;
 

@@ -61,6 +61,16 @@ class VoiceChannelServiceTest {
     }
 
     @Test
+    void joinVoiceChannel_userInGuildButNotInVoiceChannel_returnsFalse() {
+        when(member.getVoiceState()).thenReturn(voiceState);
+        when(voiceState.inAudioChannel()).thenReturn(false);
+
+        boolean result = voiceChannelService.joinVoiceChannel(member);
+
+        assertFalse(result);
+    }
+
+    @Test
     void joinVoiceChannel_alreadyConnected_returnsTrue() {
         when(member.getVoiceState()).thenReturn(voiceState);
         when(voiceState.inAudioChannel()).thenReturn(true);
