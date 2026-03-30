@@ -124,7 +124,7 @@ public class Player {
         return text.length() > maxLength ? text.substring(0, maxLength - 3) + "..." : text;
     }
 
-    private void checkVoiceChannel(SlashCommandInteractionEvent event) {
+    void checkVoiceChannel(SlashCommandInteractionEvent event) {
         log.info("checkVoiceChannel called - isConnected: {} | userInChannel: {}", 
             voiceChannelService.isConnected(event.getGuild()),
             event.getMember().getVoiceState() != null && event.getMember().getVoiceState().inAudioChannel());

@@ -5,11 +5,10 @@ import org.springframework.stereotype.Service;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-
-import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
