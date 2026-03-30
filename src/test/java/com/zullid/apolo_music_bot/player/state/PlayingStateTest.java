@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.restaction.WebhookMessageCreateAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,7 +71,7 @@ class PlayingStateTest {
     private OptionMapping optionMapping;
 
     @Mock
-    private WebhookMessageCreateAction<?> editAction;
+    private WebhookMessageCreateAction<Message> editAction;
 
     @Captor
     private ArgumentCaptor<AudioLoadResultHandler> handlerCaptor;
@@ -92,7 +92,7 @@ class PlayingStateTest {
         lenient().when(event.getOption("query")).thenReturn(optionMapping);
         lenient().when(optionMapping.getAsString()).thenReturn("test-query");
         lenient().when(event.getHook()).thenReturn(hook);
-        lenient().when(hook.sendMessage(anyString())).thenReturn((WebhookMessageCreateAction) editAction);
+        lenient().doReturn(editAction).when(hook).sendMessage(anyString());
         lenient().doNothing().when(editAction).queue();
     }
 
