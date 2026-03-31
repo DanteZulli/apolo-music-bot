@@ -15,8 +15,6 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    reviewers:
-      - "DanteZulli"
 
   # Docker base images
   - package-ecosystem: "docker"
@@ -33,8 +31,6 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-    reviewers:
-      - "DanteZulli"
 
   # GitHub Actions (for future CI/CD workflows)
   - package-ecosystem: "github-actions"
@@ -51,5 +47,3 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
-    reviewers:
-      - "DanteZulli"
