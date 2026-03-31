@@ -31,7 +31,7 @@
 	</scm>
 	<properties>
 		<java.version>25</java.version>
-		<jda.version>6.3.2</jda.version>
+		<jda.version>6.4.0</jda.version>
 		<lavaplayer.version>2.2.6</lavaplayer.version>
 		<lavalink.youtube.version>1.18.0</lavalink.youtube.version>
 		<jdave.version>0.1.7</jdave.version>
