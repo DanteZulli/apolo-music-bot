@@ -12,6 +12,8 @@ updates:
     labels:
       - "dependencies"
       - "java"
+    reviewers:
+      - "DanteZulli"
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -28,6 +30,8 @@ updates:
     labels:
       - "dependencies"
       - "docker"
+    reviewers:
+      - "DanteZulli"
     commit-message:
       prefix: "deps"
       include: "scope"
@@ -44,6 +48,8 @@ updates:
     labels:
       - "dependencies"
       - "ci-cd"
+    reviewers:
+      - "DanteZulli"
     commit-message:
       prefix: "ci"
       include: "scope"
