@@ -18,6 +18,7 @@
     <a href="https://www.java.com/"><img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"></a>
     <a href="https://spring.io/"><img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring"></a>
     <a href="https://maven.apache.org/"><img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="Maven"></a>
+    <a href="https://podman.io/"><img src="https://img.shields.io/badge/Podman-892CA0?style=for-the-badge&logo=podman&logoColor=white" alt="Podman"></a>
   </p>
 
   <p align="center">
@@ -104,6 +105,7 @@ podman compose up --build -d
 - `/resume`: Resumes the paused playback
 - `/stop`: Stops the playback and clears the queue
 - `/skip`: Skips the current song and moves to the next one in the queue
+- `/queue`: Shows the current queue and the track currently playing
 - `/help`: Displays a list of available commands and their usage
 
 ## Acknowledgments
