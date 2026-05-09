@@ -4,7 +4,7 @@ This file provides guidelines and instructions for agentic coding agents working
 
 ## Project Overview
 
-Apolo Music Bot is a Discord music bot built with Java 25, Spring Boot 3.5.8, and Maven. It uses JDA for Discord API integration and LavaPlayer for audio streaming.
+Apolo Music Bot is a Discord music bot built with Java, Spring Boot, and Maven. It uses JDA for Discord API integration and LavaPlayer for audio streaming.
 
 ## Build & Run Commands
 
@@ -49,7 +49,7 @@ For Docker/Podman: Use `docker-compose.yml` or set environment variables in your
 - **Package naming**: `com.zullid.apolo_music_bot.*`
 - **Java version**: 25 (use latest Java features when appropriate)
 - **Build tool**: Maven (use `./mvnw` wrapper, not system `mvn`)
-- **Spring Boot version**: 3.5.8
+- **Spring Boot**: Latest stable
 
 ### Project Structure
 
@@ -59,8 +59,11 @@ src/
 │   ├── ApoloMusicBotApplication.java    # Main entry point
 │   ├── config/                           # Configuration classes
 │   ├── services/                         # Spring services
-│   ├── player/                           # Player logic (state pattern)
-│   ├── listeners/                        # JDA event listeners
+│   ├── player/                           # Player context
+│   │   └── state/                        # State pattern implementations
+│   ├── listeners/
+│   │   ├── commands/                     # Slash command listeners
+│   │   └── events/                       # JDA event listeners
 │   └── handlers/                         # Audio handlers
 └── test/java/                           # Test classes
 ```
@@ -126,7 +129,8 @@ The player uses a State pattern:
 - Tests are located in `src/test/java/`
 - Use `@SpringBootTest` for integration tests
 - Run tests with `./mvnw test`
-- Currently only a basic context load test exists
+- Run a single test class with `./mvnw test -Dtest=<ClassName>`
+- Unit tests cover services, handlers, player states, and listeners
 
 ### Discord Commands
 
@@ -141,9 +145,9 @@ Available slash commands:
 
 ### Key Dependencies
 
-- **JDA 6.3.2** - Discord API wrapper (supports DAVE protocol)
-- **LavaPlayer 2.2.6** - Audio player library
-- **LavaLink YouTube 1.18.0** - YouTube source
-- **JDave 0.1.7** - Voice encryption (required for March 2026 voice support)
-- **Spring Boot 3.5.8** - Application framework
+- **JDA** - Discord API wrapper (supports DAVE protocol)
+- **LavaPlayer** - Audio player library
+- **LavaLink YouTube** - YouTube source
+- **JDave** - Voice encryption (required for March 2026 voice support)
+- **Spring Boot** - Application framework
 - **Lombok** - Code generation
