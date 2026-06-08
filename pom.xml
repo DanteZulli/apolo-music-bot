@@ -35,7 +35,7 @@
 		<lavaplayer.version>2.2.6</lavaplayer.version>
 		<lavalink.youtube.version>1.18.1</lavalink.youtube.version>
 		<jdave.version>0.1.8</jdave.version>
-		<jacoco.version>0.8.14</jacoco.version>
+		<jacoco.version>0.8.15</jacoco.version>
 	</properties>
 	<repositories>
 		<repository>
