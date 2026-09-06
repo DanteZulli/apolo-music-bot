@@ -1,10 +1,10 @@
-# 2. Environment
+# 02. Environment
 
-[Index](DOCS.md) | Prev: [Discord Setup](01-discord-setup.md) | Next: [Run](03-run.md)
+[Setup](../setup.md) | Prev: [Discord Setup](01-discord-setup.md) | Next: [Run](03-run.md)
 
 Goal: provide the bot token to the application.
 
-Prerequisites: phase 1 done (bot exists, you have its token). Required for both local and container runs.
+Prerequisites: step 01 done (bot exists, you have its token). Required for both local and container runs.
 
 ## Setup
 

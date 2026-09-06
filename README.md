@@ -20,11 +20,19 @@
   </p>
 
   <p align="center">
-    A self-hosted, feature-rich music bot for Discord.
+    A self-hosted, feature-rich music bot for Discord, built with Java using <a href="https://github.com/DV8FromTheWorld/JDA">JDA</a> and <a href="https://github.com/lavalink-devs/lavaplayer">LavaPlayer</a>.
     <br />
     <a href="docs/DOCS.md"><strong>Explore the docs »</strong></a>
   </p>
 </div>
+
+## About
+
+Apolo plays music in your Discord voice channels through simple slash commands. Queue up tracks, pause, skip, and manage playback without leaving the chat.
+
+- Slash commands with queue management
+- Runs locally with Gradle or containerized with Docker / Podman
+- Voice encryption (DAVE) ready for current Discord requirements
 
 ## Quickstart
 
@@ -35,15 +43,19 @@ cp .envrc.sample .envrc # then set DISCORD_BOT_TOKEN
 ./gradlew bootRun
 ```
 
-Full setup in order: [docs/DOCS.md](docs/DOCS.md)
+## Acknowledgments
 
-## Commands
+If you like this bot or find the project interesting, don't forget to check out the libraries that made it possible and drop them a star.
 
-`/play` `/pause` `/resume` `/stop` `/skip` `/queue` `/help` — see [commands](docs/04-commands.md).
+* [JDA](https://github.com/DV8FromTheWorld/JDA) - The Java library for Discord API
+* [LavaPlayer](https://github.com/lavalink-devs/lavaplayer) - Audio player library for Discord bots. We also use the [youtube-source](https://github.com/lavalink-devs/youtube-source) manager.
+  * Special thanks to the [original LavaPlayer](https://github.com/sedmelluq/lavaplayer), which inspired us to start building this bot before migrating to the fork.
+
+Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/MusicBot) and [FredBoat](https://github.com/freyacodes/archived-bot/), whose open-source projects served as excellent references and learning resources.
 
 ## License
 
-GPL v3. See the `LICENSE` file for details.
+This project is licensed under the GPL v3 License. See the `LICENSE` file for details.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [contributors-shield]: https://img.shields.io/github/contributors/DanteZulli/apolo-music-bot?style=for-the-badge

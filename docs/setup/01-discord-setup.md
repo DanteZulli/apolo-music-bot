@@ -1,6 +1,6 @@
-# 1. Discord Setup
+# 01. Discord Setup
 
-[Index](DOCS.md) | Next: [Environment](02-environment.md)
+[Setup](../setup.md) | Next: [Environment](02-environment.md)
 
 Goal: create the Discord application and invite the bot to your server.
 

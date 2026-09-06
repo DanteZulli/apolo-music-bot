@@ -1,6 +1,6 @@
-# 5. Architecture
+# Architecture
 
-[Index](DOCS.md) | Prev: [Commands](04-commands.md) | Next: [Troubleshooting](06-troubleshooting.md)
+[Index](DOCS.md)
 
 Goal: orient developers in the codebase. Full diagram: [class-diagram.puml](class-diagram.puml).
 

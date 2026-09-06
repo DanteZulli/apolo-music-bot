@@ -1,6 +1,6 @@
-# 6. Troubleshooting
+# Troubleshooting
 
-[Index](DOCS.md) | Prev: [Architecture](05-architecture.md)
+[Index](DOCS.md)
 
 Goal: fixes for the most common failures.
 

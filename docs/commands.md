@@ -1,10 +1,10 @@
-# 4. Commands
+# Commands
 
-[Index](DOCS.md) | Prev: [Run](03-run.md) | Next: [Architecture](05-architecture.md)
+[Index](DOCS.md)
 
 Goal: usage reference for all slash commands.
 
-Prerequisites: bot running (phase 3) and present in a voice channel with you.
+Prerequisites: bot running and present in a voice channel with you. New here? Start at [Setup](setup.md).
 
 | Command | Effect |
 |---------|--------|

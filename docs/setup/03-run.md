@@ -1,10 +1,10 @@
-# 3. Run
+# 03. Run
 
-[Index](DOCS.md) | Prev: [Environment](02-environment.md) | Next: [Commands](04-commands.md)
+[Setup](../setup.md) | Prev: [Environment](02-environment.md)
 
 Goal: start the bot. Pick one option.
 
-Prerequisites: phases 1-2 done (bot invited, token configured).
+Prerequisites: steps 01-02 done (bot invited, token configured).
 
 ## Option A: Local (Gradle)
 
@@ -34,4 +34,4 @@ podman compose up --build -d
 
 Image references use full registry paths so they work on [Podman](https://podman.io/) and environments without `unqualified-search-registries` (e.g. [Debian](https://wiki.debian.org/Podman)).
 
-Stuck? See [Troubleshooting](06-troubleshooting.md).
+Stuck? See [Troubleshooting](../troubleshooting.md). Ready to use it? See [Commands](../commands.md).
