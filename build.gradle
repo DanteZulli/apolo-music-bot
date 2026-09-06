@@ -7,8 +7,7 @@ plugins {
 
 group = 'com.zullid'
 version = '0.0.1-SNAPSHOT'
-description = 'A self-hosted, feature-rich music bot for Discord. Stream 
-your favorite tunes seamlessly'
+description = 'A self-hosted, feature-rich music bot for Discord.'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_25
