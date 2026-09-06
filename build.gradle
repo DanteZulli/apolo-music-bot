@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
+}
+
+group = 'com.zullid'
+version = '0.0.1-SNAPSHOT'
+description = 'A self-hosted, feature-rich music bot for Discord. Stream 
+your favorite tunes seamlessly'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+ext {
+    jdaVersion = '6.5.0'
+    lavaplayerVersion = '2.2.7'
+    lavalinkYoutubeVersion = '1.18.2'
+    jdaveVersion = '0.1.8'
+}
+
+dependencies {
+    implementation "dev.arbjerg:lavaplayer:${lavaplayerVersion}"
+    implementation "dev.lavalink.youtube:v2:${lavalinkYoutubeVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation "net.dv8tion:JDA:${jdaVersion}"
+
+    implementation "club.minnced:jdave-api:${jdaveVersion}"
+    runtimeOnly "club.minnced:jdave-native-linux-x86-64:${jdaveVersion}"
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    finalizedBy(tasks.named('jacocoTestReport'))
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 25
+}
+
+jacoco {
+    toolVersion = '0.8.15'
+}

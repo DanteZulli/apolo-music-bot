@@ -4,31 +4,31 @@ This file provides guidelines and instructions for agentic coding agents working
 
 ## Project Overview
 
-Apolo Music Bot is a Discord music bot built with Java, Spring Boot, and Maven. It uses JDA for Discord API integration and LavaPlayer for audio streaming.
+Apolo Music Bot is a Discord music bot built with Java, Spring Boot, and Gradle. It uses JDA for Discord API integration and LavaPlayer for audio streaming.
 
 ## Build & Run Commands
 
 ```bash
 # Build the project
-./mvnw clean install
+./gradlew build
 
 # Run the application
-./mvnw spring-boot:run
+./gradlew bootRun
 
 # Run tests
-./mvnw test
+./gradlew test
 
 # Run a single test class
-./mvnw test -Dtest=ApoloMusicBotApplicationTests
+./gradlew test --tests "ApoloMusicBotApplicationTests"
 
 # Run a single test method
-./mvnw test -Dtest=ApoloMusicBotApplicationTests#contextLoads
+./gradlew test --tests "ApoloMusicBotApplicationTests.contextLoads"
 
 # Package without running tests
-./mvnw package -DskipTests
+./gradlew assemble -x test
 
 # Clean build
-./mvnw clean
+./gradlew clean
 ```
 
 ## Environment Configuration
@@ -48,7 +48,7 @@ For Docker/Podman: Use `docker-compose.yml` or set environment variables in your
 
 - **Package naming**: `com.zullid.apolo_music_bot.*`
 - **Java version**: 25 (use latest Java features when appropriate)
-- **Build tool**: Maven (use `./mvnw` wrapper, not system `mvn`)
+- **Build tool**: Gradle (use `./gradlew` wrapper, not system `gradle`)
 - **Spring Boot**: Latest stable
 
 ### Project Structure
@@ -128,8 +128,8 @@ The player uses a State pattern:
 
 - Tests are located in `src/test/java/`
 - Use `@SpringBootTest` for integration tests
-- Run tests with `./mvnw test`
-- Run a single test class with `./mvnw test -Dtest=<ClassName>`
+- Run tests with `./gradlew test`
+- Run a single test class with `./gradlew test --tests "<ClassName>"`
 - Unit tests cover services, handlers, player states, and listeners
 
 ### Discord Commands

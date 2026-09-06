@@ -1,37 +1,202 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ==============================================================================
+# Apolo Music Bot — .gitignore
+# Combined template: Gradle + Java + Spring Boot (+ IDEs / OS / security)
+# NOTE: `src/main/resources/application.properties` is intentionally TRACKED
+# (it only references ${DISCORD_BOT_TOKEN}), so application.properties/yml
+# patterns are deliberately NOT ignored here.
+# ==============================================================================
 
-### STS ###
-.apt_generated
-.classpath
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# SECURITY & SENSITIVE DATA (ALWAYS FIRST!)
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+.env
+.env.*
+!.env.example
+!.env.sample
+secrets.yml
+*.crt
+*.key
+*.keystore
+*.pem
+*.secret
+*.token
+*_keys
+*_secrets
+*_tokens
+id_dsa
+id_rsa
+*.cer
+*.csr
+*.der
+*.jks
+*.p12
+*.p7b
+*.p7c
+*.pfx
+*.truststore
+
+# Local dev convenience (direnv). Samples stay tracked.
+.envrc
+!.envrc.example
+!.envrc.sample
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# GRADLE
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+.gradle/
+**/build/
+!**/src/**/build/
+build/
+buildNumber.properties
+.gradletasknamecache
+.gradle-task-cache/
+.gradle-task-namecache/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Cache of project
+.cache/
+
+# Gradle verification metadata (uncomment to track it instead)
+# !gradle/verification-metadata.xml
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# JAVA / JVM
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# Compiled class files
+*.class
+
+# Package files (MUST come before the wrapper !exceptions below)
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Keep the Gradle wrapper committable (last match wins, so these go AFTER *.jar)
+!gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+!gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.properties
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Test / coverage reports
+TEST-*.xml
+junit.xml
+testng-results.xml
+**/test-output/
+**/test-results/
+test-output/
+test-reports/
+test-results/
+.coverage
+.coverage.*
+.coverage.xml
+.coverage_html/
+.jacoco/
+.sonar/
+checkstyle-result.xml
+cover/
+heapdump.hprof
+
+# Javadoc output
+javadoc/
+
+# BlueJ / Mobile Tools for Java
+*.ctxt
+.mtj.tmp/
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# SPRING BOOT
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 .factorypath
-.project
-.settings
+.spring-devtools.properties
 .springBeans
-.sts4-cache
+HELP.md
+dependency-reduced-pom.xml
+flattened-pom.xml
+.flattened-pom.xml
+pom.xml.next
+pom.xml.releaseBackup
+pom.xml.tag
+pom.xml.versionsBackup
+release.properties
+manifest.yml
+MANIFEST.MF
+activemq-data/
+dump.rdb
+overridedb.*
+interpolated*.xml
+logs/
+*.log
+*.log.*
+*.pid
+*.pid.lock
+*.tgz
+*.o
+*.obj
+out/
+bin/
+!/**/src/**/bin
+lib/
+_site/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# IDEs & EDITORS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# IntelliJ IDEA
+.idea/
 *.iml
 *.ipr
+*.iws
 
-### NetBeans ###
+# Eclipse / STS
+.project
+.classpath
+.settings/
+.apt_generated
+.springBeans
+.sts4-cache
+.recommenders
+
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
 
-### Local env ###
-.env
-.envrc
+# Kotlin
+/.kotlin/
+
+# Misc editor artifacts
+*.sw?
+*~
+.#*
+.*.md.html
+*.orig
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# OS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+.DS_Store
+Thumbs.db
+Desktop.ini
+.attach_pid*
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# MISC PROJECT ARTIFACTS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+node_modules/
+.git-hooks/
+build.log
+/code

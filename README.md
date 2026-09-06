@@ -17,7 +17,7 @@
   <p align="center">
     <a href="https://www.java.com/"><img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"></a>
     <a href="https://spring.io/"><img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white" alt="Spring"></a>
-    <a href="https://maven.apache.org/"><img src="https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white" alt="Maven"></a>
+    <a href="https://gradle.org/"><img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white" alt="Gradle"></a>
     <a href="https://podman.io/"><img src="https://img.shields.io/badge/Podman-892CA0?style=for-the-badge&logo=podman&logoColor=white" alt="Podman"></a>
   </p>
 
@@ -74,10 +74,10 @@ export DISCORD_BOT_TOKEN=your_discord_token_here
 
 ### Local Execution
 
-Build and run the project using Maven:
+Build and run the project using Gradle:
 ```bash
-mvn clean install
-mvn spring-boot:run
+./gradlew build
+./gradlew bootRun
 ```
 
 ### Docker / Podman
