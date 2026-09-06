@@ -7,10 +7,9 @@ plugins {
 
 group = 'com.zullid'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+description = 'A self-hosted, feature-rich music bot for Discord. Stream 
+your favorite tunes seamlessly'
 
-// Compile bytecode for Java 25 using whatever JDK (>= 25) runs the build.
-// Docker pins eclipse-temurin:25, so CI/prod always build on 25.
 java {
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
@@ -44,7 +43,6 @@ dependencies {
 
 tasks.named('test', Test) {
     useJUnitPlatform()
-    // Maven parity: the pom generated the JaCoCo report in the `test` phase
     finalizedBy(tasks.named('jacocoTestReport'))
 }
 
