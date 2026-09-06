@@ -22,7 +22,7 @@
   <p align="center">
     A self-hosted, feature-rich music bot for Discord, built with Java using <a href="https://github.com/DV8FromTheWorld/JDA">JDA</a> and <a href="https://github.com/lavalink-devs/lavaplayer">LavaPlayer</a>.
     <br />
-    <a href="docs/index.md"><strong>Explore the docs »</strong></a>
+    <a href="docs/DOCS.md"><strong>Explore the docs »</strong></a>
   </p>
 </div>
 

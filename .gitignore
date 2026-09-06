@@ -200,6 +200,3 @@ node_modules/
 .git-hooks/
 build.log
 /code
-
-# MkDocs build output
-site/

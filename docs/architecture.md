@@ -1,6 +1,6 @@
 # Architecture
 
-[Index](index.md)
+[Setup Guide](DOCS.md)
 
 Goal: orient developers in the codebase. Full diagram: [class-diagram.puml](class-diagram.puml).
 
