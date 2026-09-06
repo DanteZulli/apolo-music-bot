@@ -1,6 +1,6 @@
 # Setup
 
-[Index](DOCS.md)
+[Index](index.md)
 
 Goal: get the bot invited, configured, and running. Follow the steps in order.
 

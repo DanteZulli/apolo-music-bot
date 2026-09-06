@@ -1,6 +1,6 @@
 # Commands
 
-[Index](DOCS.md)
+[Index](index.md)
 
 Goal: usage reference for all slash commands.
 

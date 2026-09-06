@@ -151,3 +151,10 @@ Available slash commands:
 - **JDave** - Voice encryption (required for March 2026 voice support)
 - **Spring Boot** - Application framework
 - **Lombok** - Code generation
+
+## Docs
+
+- User docs live in `docs/` and render with MkDocs Material (nav in `mkdocs.yml`).
+- `docs/index.md` is the site home (topic index); `docs/setup.md` groups the numbered setup steps in `docs/setup/`.
+- Use absolute GitHub URLs for links to files outside `docs/` (e.g. this file), so `mkdocs build --strict` stays warning-free.
+- Preview with `mkdocs serve` (requires `mkdocs` + `mkdocs-material`); `site/` output is gitignored.

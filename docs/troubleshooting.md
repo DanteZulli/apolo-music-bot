@@ -1,6 +1,6 @@
 # Troubleshooting
 
-[Index](DOCS.md)
+[Index](index.md)
 
 Goal: fixes for the most common failures.
 

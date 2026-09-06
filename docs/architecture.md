@@ -1,6 +1,6 @@
 # Architecture
 
-[Index](DOCS.md)
+[Index](index.md)
 
 Goal: orient developers in the codebase. Full diagram: [class-diagram.puml](class-diagram.puml).
 
@@ -37,4 +37,4 @@ src/main/java/com/zullid/apolo_music_bot/
 
 Voice requires DAVE encryption (JDA 6.3.2+ and JDave). Do not downgrade below these versions.
 
-Code style and JDA practices live in [AGENTS.md](../AGENTS.md).
+Code style and JDA practices live in [AGENTS.md](https://github.com/DanteZulli/apolo-music-bot/blob/main/AGENTS.md).
