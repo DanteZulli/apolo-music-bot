@@ -1,7 +1,7 @@
 version: 2
 updates:
-  # Maven dependencies
-  - package-ecosystem: "maven"
+  # Gradle dependencies
+  - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "weekly"
