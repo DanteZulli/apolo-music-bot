@@ -35,21 +35,3 @@ updates:
     commit-message:
       prefix: "deps"
       include: "scope"
-
-  # GitHub Actions (for future CI/CD workflows)
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "America/Argentina/Buenos_Aires"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "ci-cd"
-    reviewers:
-      - "DanteZulli"
-    commit-message:
-      prefix: "ci"
-      include: "scope"
