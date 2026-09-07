@@ -34,15 +34,15 @@ Everything you need to get the bot running. For how the code fits together, see 
 
 ## Environment
 
-1. Clone the repository:
-```bash
-git clone https://github.com/DanteZulli/apolo-music-bot.git
-cd apolo-music-bot
-```
-
-2. Configure your environment:
+## Environment
 
 We recommend using [direnv](https://direnv.net/) with a `.envrc` file for a more convenient setup (over than overriding token values in `docker-compose.yml` or `.properties` files). This configuration is required for both local execution and Docker/Podman.
+
+Copy the sample file and set your token:
+
+```bash
+cp .envrc.sample .envrc
+```
 
 ```bash
 # .envrc
