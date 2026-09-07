@@ -1,10 +1,8 @@
 package com.zullid.apolo_music_bot.handlers;
 
-import java.nio.ByteBuffer;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
-
+import java.nio.ByteBuffer;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.audio.AudioSendHandler;
 
@@ -24,17 +22,32 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
     private final AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
 
+    /**
+     * Caches the latest frame and reports whether audio is available.
+     *
+     * @return {@code true} when a frame could be provided, {@code false} otherwise
+     */
     @Override
     public boolean canProvide() {
         lastFrame = audioPlayer.provide();
         return lastFrame != null;
     }
 
+    /**
+     * Provides 20ms of cached Opus audio to JDA.
+     *
+     * @return a buffer wrapping the last frame data
+     */
     @Override
     public ByteBuffer provide20MsAudio() {
         return ByteBuffer.wrap(lastFrame.getData());
     }
 
+    /**
+     * Indicates that provided audio is already Opus encoded.
+     *
+     * @return {@code true} always, frames require no transcoding
+     */
     @Override
     public boolean isOpus() {
         return true;

@@ -1,7 +1,5 @@
 package com.zullid.apolo_music_bot.handlers;
 
-import org.springframework.stereotype.Component;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -10,9 +8,9 @@ import com.zullid.apolo_music_bot.player.Player;
 import com.zullid.apolo_music_bot.player.state.ReadyState;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
 import com.zullid.apolo_music_bot.services.QueueService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * Handler for audio player events.
@@ -35,26 +33,70 @@ public class AudioEventHandler extends AudioEventAdapter {
     private final AudioPlayerService audioPlayerService;
     private final Player player;
 
+    /**
+     * Advances the queue when the ended track allows a next track.
+     * <p>
+     * When the queue is drained and nothing is playing, the player returns to
+     * {@code ReadyState}. End reasons that do not start a next track (for example
+     * {@code STOPPED} or {@code REPLACED}) are ignored.
+     * </p>
+     *
+     * @param audioPlayer the LavaPlayer instance
+     * @param track the track that ended
+     * @param endReason why the track ended
+     */
     @Override
-    public void onTrackEnd(AudioPlayer audioPlayer, AudioTrack track, AudioTrackEndReason endReason) {
+    public void onTrackEnd(
+        AudioPlayer audioPlayer,
+        AudioTrack track,
+        AudioTrackEndReason endReason
+    ) {
         if (endReason.mayStartNext) {
             queueService.playNextTrack();
-            if (queueService.isQueueEmpty() && audioPlayerService.getPlayer().getPlayingTrack() == null) {
+            if (
+                queueService.isQueueEmpty() &&
+                audioPlayerService.getPlayer().getPlayingTrack() == null
+            ) {
                 this.player.setState(new ReadyState(this.player));
             }
         }
     }
 
+    /**
+     * Logs the start of a track with its source URI.
+     * <p>
+     * This is the canonical "now playing" record; queue services only log at debug level.
+     * Runs on a LavaPlayer thread without logging context, so identifying data travels in
+     * the message itself.
+     * </p>
+     *
+     * @param player the LavaPlayer instance
+     * @param track the track that started
+     */
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        log.info("Started playing: {}", track.getInfo().title);
+        log.info(
+            "Now playing: {} ({})",
+            track.getInfo().title,
+            track.getInfo().uri
+        );
     }
 
+    /**
+     * Logs when playback is paused.
+     *
+     * @param player the LavaPlayer instance
+     */
     @Override
     public void onPlayerPause(AudioPlayer player) {
         log.info("Player paused");
     }
 
+    /**
+     * Logs when playback is resumed.
+     *
+     * @param player the LavaPlayer instance
+     */
     @Override
     public void onPlayerResume(AudioPlayer player) {
         log.info("Player resumed");

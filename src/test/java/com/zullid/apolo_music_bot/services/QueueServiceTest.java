@@ -1,5 +1,8 @@
 package com.zullid.apolo_music_bot.services;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
@@ -10,9 +13,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+/**
+ * Unit tests for {@link QueueService}.
+ * <p>
+ * Verifies immediate playback versus queueing, skipping, clearing, snapshot copies and
+ * size checks, using a mocked player service and player.
+ * </p>
+ *
+ * @author Dante Zulli (dantezulli2004@gmail.com)
+ */
 @ExtendWith(MockitoExtension.class)
 class QueueServiceTest {
 
@@ -27,18 +36,40 @@ class QueueServiceTest {
 
     private QueueService queueService;
 
+    /**
+     * Initializes the service with a mocked player service before each test.
+     */
     @BeforeEach
     void setUp() {
         queueService = new QueueService(audioPlayerService);
     }
 
+    /**
+     * Creates a mocked track with the given title.
+     *
+     * @param title the track title
+     * @return the mocked track
+     */
     private AudioTrack createMockTrack(String title) {
         AudioTrack track = mock(AudioTrack.class);
-        AudioTrackInfo info = new AudioTrackInfo(title, "test", 0L, "id", false, null);
+        AudioTrackInfo info = new AudioTrackInfo(
+            title,
+            "test",
+            0L,
+            "id",
+            false,
+            null
+        );
         lenient().doReturn(info).when(track).getInfo();
         return track;
     }
 
+    /**
+     * Tests that idle playback starts immediately.
+     * <p>
+     * Given no track playing, when a track is added, then it is played directly.
+     * </p>
+     */
     @Test
     void addToQueue_whenNoTrackPlaying_playsTrackImmediately() {
         AudioTrack track = createMockTrack("Test Song");
@@ -50,6 +81,12 @@ class QueueServiceTest {
         verify(audioPlayer).playTrack(track);
     }
 
+    /**
+     * Tests that busy playback queues the track.
+     * <p>
+     * Given a track playing, when another track is added, then it is queued without interrupting playback.
+     * </p>
+     */
     @Test
     void addToQueue_whenTrackIsPlaying_addsToQueue() {
         AudioTrack playingTrack = createMockTrack("Playing");
@@ -64,6 +101,12 @@ class QueueServiceTest {
         verify(audioPlayer, never()).playTrack(any(AudioTrack.class));
     }
 
+    /**
+     * Tests that skipping advances the queue.
+     * <p>
+     * Given queued tracks, when skip is requested, then the current track stops and the next one plays.
+     * </p>
+     */
     @Test
     void skipCurrentTrack_stopsAndPlaysNext() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -83,6 +126,12 @@ class QueueServiceTest {
         verify(audioPlayer).playTrack(any(AudioTrack.class));
     }
 
+    /**
+     * Tests that clearing empties the queue and stops playback.
+     * <p>
+     * Given queued tracks, when clear is requested, then the queue is empty and the player stops.
+     * </p>
+     */
     @Test
     void clearQueue_removesAllTracksAndStopsPlayback() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -98,6 +147,12 @@ class QueueServiceTest {
         verify(audioPlayer).stopTrack();
     }
 
+    /**
+     * Tests that the queue snapshot is a defensive copy.
+     * <p>
+     * Given queued tracks, when the list is requested and mutated, then the internal queue is unaffected.
+     * </p>
+     */
     @Test
     void getQueueList_returnsCopyOfQueue() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -113,11 +168,23 @@ class QueueServiceTest {
         assertEquals(2, queueService.getQueueSize());
     }
 
+    /**
+     * Tests that an empty queue reports empty.
+     * <p>
+     * Given no tracks, when checked, then it returns true.
+     * </p>
+     */
     @Test
     void isQueueEmpty_whenEmpty_returnsTrue() {
         assertTrue(queueService.isQueueEmpty());
     }
 
+    /**
+     * Tests that a non-empty queue reports non-empty.
+     * <p>
+     * Given a queued track, when checked, then it returns false.
+     * </p>
+     */
     @Test
     void isQueueEmpty_whenNotEmpty_returnsFalse() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -128,6 +195,12 @@ class QueueServiceTest {
         assertFalse(queueService.isQueueEmpty());
     }
 
+    /**
+     * Tests that the size reflects queued tracks.
+     * <p>
+     * Given two queued tracks, when sized, then it returns 2.
+     * </p>
+     */
     @Test
     void getQueueSize_returnsCorrectSize() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -139,6 +212,12 @@ class QueueServiceTest {
         assertEquals(2, queueService.getQueueSize());
     }
 
+    /**
+     * Tests that advancing an empty queue is a no-op.
+     * <p>
+     * Given an empty queue, when next is requested, then it stays empty.
+     * </p>
+     */
     @Test
     void playNextTrack_whenQueueEmpty_logsEmptyQueue() {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
@@ -148,6 +227,12 @@ class QueueServiceTest {
         assertTrue(queueService.isQueueEmpty());
     }
 
+    /**
+     * Tests that advancing a non-empty queue plays next.
+     * <p>
+     * Given a queued track, when next is requested, then it plays and the queue drains.
+     * </p>
+     */
     @Test
     void playNextTrack_whenQueueHasTracks_playsNextTrack() {
         AudioTrack playingTrack = createMockTrack("Playing");

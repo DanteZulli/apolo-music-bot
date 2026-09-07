@@ -1,20 +1,18 @@
 package com.zullid.apolo_music_bot.config;
 
-import org.springframework.context.annotation.Configuration;
-
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for registering music bot commands with JDA.
  * <p>
  * This class defines and registers slash commands for the music bot,
- * including play, pause, resume, stop, and skip commands, using the JDA API.
+ * including play, pause, resume, stop, skip, queue and help, using the JDA API.
  * Commands are registered globally upon application startup.
  * </p>
  *
@@ -25,39 +23,70 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PlayerCommandConfig {
 
-        private final JDA jda;
+    private final JDA jda;
 
-        @PostConstruct
-        public void registerCommands() {
-                SlashCommandData playCommand = Commands
-                                .slash("play", "Plays a song from any source or adds it to the queue")
-                                .addOption(net.dv8tion.jda.api.interactions.commands.OptionType.STRING, "query", "URL",
-                                                true);
+    /**
+     * Registers the global slash commands on application startup.
+     */
+    @PostConstruct
+    public void registerCommands() {
+        SlashCommandData playCommand = Commands.slash(
+            "play",
+            "Plays a song from any source or adds it to the queue"
+        ).addOption(
+            net.dv8tion.jda.api.interactions.commands.OptionType.STRING,
+            "query",
+            "URL",
+            true
+        );
 
-                SlashCommandData pauseCommand = Commands.slash("pause", "Pauses the current playback");
+        SlashCommandData pauseCommand = Commands.slash(
+            "pause",
+            "Pauses the current playback"
+        );
 
-                SlashCommandData resumeCommand = Commands.slash("resume", "Resumes the paused playback");
+        SlashCommandData resumeCommand = Commands.slash(
+            "resume",
+            "Resumes the paused playback"
+        );
 
-                SlashCommandData stopCommand = Commands.slash("stop", "Stops the playback and clears the queue");
+        SlashCommandData stopCommand = Commands.slash(
+            "stop",
+            "Stops the playback and clears the queue"
+        );
 
-                SlashCommandData skipCommand = Commands.slash("skip",
-                                "Skips the current song and moves to the next one in the queue");
+        SlashCommandData skipCommand = Commands.slash(
+            "skip",
+            "Skips the current song and moves to the next one in the queue"
+        );
 
-                SlashCommandData helpCommand = Commands.slash("help", "Shows available commands and their descriptions");
+        SlashCommandData helpCommand = Commands.slash(
+            "help",
+            "Shows available commands and their descriptions"
+        );
 
-                SlashCommandData queueCommand = Commands.slash("queue", "Shows the current queue");
+        SlashCommandData queueCommand = Commands.slash(
+            "queue",
+            "Shows the current queue"
+        );
 
-                jda.updateCommands()
-                                .addCommands(
-                                                playCommand,
-                                                pauseCommand,
-                                                resumeCommand,
-                                                stopCommand,
-                                                skipCommand,
-                                                helpCommand,
-                                                queueCommand)
-                                .queue(success -> log.info("Commands registered successfully"),
-                                                error -> log.error("Error registering commands: {}",
-                                                                error.getMessage()));
-        }
+        jda.updateCommands()
+            .addCommands(
+                playCommand,
+                pauseCommand,
+                resumeCommand,
+                stopCommand,
+                skipCommand,
+                helpCommand,
+                queueCommand
+            )
+            .queue(
+                success -> log.info("Commands registered successfully"),
+                error ->
+                    log.error(
+                        "Error registering commands: {}",
+                        error.getMessage()
+                    )
+            );
+    }
 }
