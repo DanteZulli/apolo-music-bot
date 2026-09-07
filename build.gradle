@@ -19,7 +19,7 @@ ext {
     lavaplayerVersion = '2.2.7'
     lavalinkYoutubeVersion = '1.18.2'
     jdaveVersion = '0.1.8'
-    logstashEncoderVersion = '8.0'
+    logstashEncoderVersion = '9.0'
 }
 
 dependencies {
