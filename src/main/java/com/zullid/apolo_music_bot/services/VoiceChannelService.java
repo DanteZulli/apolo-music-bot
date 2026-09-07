@@ -46,14 +46,14 @@ public class VoiceChannelService {
             member.getVoiceState() == null ||
             !member.getVoiceState().inAudioChannel()
         ) {
-            log.warn("User is not in a voice channel");
+            log.warn("User {} is not in a voice channel", member.getId());
             return false;
         }
 
         AudioManager audioManager = member.getGuild().getAudioManager();
 
         if (audioManager.isConnected()) {
-            log.info("Already connected to voice channel, skipping join");
+            log.debug("Already connected to voice channel, skipping join");
             return true;
         }
 

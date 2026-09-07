@@ -42,10 +42,13 @@ public class QueueService {
     public void addToQueue(AudioTrack track) {
         if (audioPlayerService.getPlayer().getPlayingTrack() == null) {
             audioPlayerService.getPlayer().playTrack(track);
-            log.info("Now playing: {}", track.getInfo().title);
+            log.debug(
+                "Playing immediately (queue was idle): {}",
+                track.getInfo().title
+            );
         } else {
             if (queue.offer(track)) {
-                log.info("Added to queue: {}", track.getInfo().title);
+                log.debug("Added to queue: {}", track.getInfo().title);
             }
         }
     }
@@ -71,9 +74,9 @@ public class QueueService {
 
         if (nextTrack != null) {
             player.playTrack(nextTrack);
-            log.info("Now playing: {}", nextTrack.getInfo().title);
+            log.debug("Advanced to next track: {}", nextTrack.getInfo().title);
         } else {
-            log.info("Queue is empty");
+            log.debug("Queue is empty, nothing to play");
         }
     }
 

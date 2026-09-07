@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <springProperty
+        name="APP_NAME"
+        source="spring.application.name"
+        defaultValue="apolo-music-bot"
+    />
+
+    <!-- Dev: human-readable console with request context. -->
+    <springProfile name="dev">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern
+                >%d{HH:mm:ss.SSS} %-5level [%X{command:-startup} g:%X{guildId:-} u:%X{userId:-}] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- Non-dev (hosted): JSON to stdout for log aggregation plus a rolling JSON file. -->
+    <springProfile name="!dev">
+        <appender
+            name="JSON_CONSOLE"
+            class="ch.qos.logback.core.ConsoleAppender"
+        >
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app":"${APP_NAME}"}</customFields>
+            </encoder>
+        </appender>
+        <appender
+            name="JSON_FILE"
+            class="ch.qos.logback.core.rolling.RollingFileAppender"
+        >
+            <file>logs/apolo.log</file>
+            <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"
+            >
+                <fileNamePattern
+                >logs/apolo-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+                <maxFileSize>10MB</maxFileSize>
+                <maxHistory>30</maxHistory>
+                <totalSizeCap>1GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>{"app":"${APP_NAME}"}</customFields>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE" />
+            <appender-ref ref="JSON_FILE" />
+        </root>
+    </springProfile>
+</configuration>

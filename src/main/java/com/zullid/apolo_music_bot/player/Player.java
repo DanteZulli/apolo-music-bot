@@ -196,8 +196,8 @@ public class Player {
      * @param event the slash command interaction carrying guild and member info
      */
     void checkVoiceChannel(SlashCommandInteractionEvent event) {
-        log.info(
-            "checkVoiceChannel called - isConnected: {} | userInChannel: {}",
+        log.debug(
+            "Voice precheck - botConnected: {} | userInChannel: {}",
             voiceChannelService.isConnected(event.getGuild()),
             event.getMember().getVoiceState() != null &&
                 event.getMember().getVoiceState().inAudioChannel()

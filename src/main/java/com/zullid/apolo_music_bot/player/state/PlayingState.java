@@ -113,7 +113,11 @@ public class PlayingState extends PlayerState {
                             "Error loading track: " + exception.getMessage()
                         )
                         .queue();
-                    log.error("Error loading track", exception);
+                    log.error(
+                        "Error loading track for query: {}",
+                        query,
+                        exception
+                    );
                     player.setState(new ReadyState(player));
                 }
             }

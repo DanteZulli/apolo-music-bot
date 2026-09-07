@@ -19,6 +19,7 @@ ext {
     lavaplayerVersion = '2.2.7'
     lavalinkYoutubeVersion = '1.18.2'
     jdaveVersion = '0.1.8'
+    logstashEncoderVersion = '8.0'
 }
 
 dependencies {
@@ -35,6 +36,8 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashEncoderVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

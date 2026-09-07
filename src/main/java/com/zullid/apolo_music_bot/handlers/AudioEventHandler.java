@@ -63,14 +63,23 @@ public class AudioEventHandler extends AudioEventAdapter {
     }
 
     /**
-     * Logs the start of a track.
+     * Logs the start of a track with its source URI.
+     * <p>
+     * This is the canonical "now playing" record; queue services only log at debug level.
+     * Runs on a LavaPlayer thread without logging context, so identifying data travels in
+     * the message itself.
+     * </p>
      *
      * @param player the LavaPlayer instance
      * @param track the track that started
      */
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
-        log.info("Started playing: {}", track.getInfo().title);
+        log.info(
+            "Now playing: {} ({})",
+            track.getInfo().title,
+            track.getInfo().uri
+        );
     }
 
     /**

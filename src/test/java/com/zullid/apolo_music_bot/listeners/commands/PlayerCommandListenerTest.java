@@ -1,21 +1,26 @@
 package com.zullid.apolo_music_bot.listeners.commands;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 import com.zullid.apolo_music_bot.player.Player;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.MDC;
 
 /**
  * Unit tests for {@link PlayerCommandListener}.
  * <p>
  * Verifies that guild slash commands are routed to the matching {@link Player} method,
- * that unknown commands receive an ephemeral error, and that non-guild events are
- * ignored, using mocked player and interaction events.
+ * that unknown commands receive an ephemeral error, that non-guild events are
+ * ignored, and that the logging context is cleared after handling, using mocked
+ * player and interaction events.
  * </p>
  *
  * @author Dante Zulli (dantezulli2004@gmail.com)
@@ -29,14 +34,24 @@ class PlayerCommandListenerTest {
     @Mock
     private SlashCommandInteractionEvent event;
 
+    @Mock
+    private Guild guild;
+
+    @Mock
+    private User user;
+
     private PlayerCommandListener listener;
 
     /**
-     * Creates the listener with a mocked player before each test.
+     * Creates the listener with mocked guild identity for logging context.
      */
     @BeforeEach
     void setUp() {
         listener = new PlayerCommandListener(player);
+        lenient().when(event.getGuild()).thenReturn(guild);
+        lenient().when(guild.getId()).thenReturn("guild-123");
+        lenient().when(event.getUser()).thenReturn(user);
+        lenient().when(user.getId()).thenReturn("user-456");
     }
 
     /**
@@ -198,5 +213,25 @@ class PlayerCommandListenerTest {
 
         verify(player, never()).play(any());
         verify(event, never()).reply(anyString());
+    }
+
+    /**
+     * Tests that the logging context does not leak between handlings.
+     * <p>
+     * Given a guild {@code play} interaction, when handled, then the player is invoked
+     * and no command, guild or user ids remain in the logging context afterwards.
+     * </p>
+     */
+    @Test
+    void onSlashCommandInteraction_clearsLoggingContextAfterHandling() {
+        when(event.isFromGuild()).thenReturn(true);
+        when(event.getName()).thenReturn("play");
+
+        listener.onSlashCommandInteraction(event);
+
+        verify(player).play(event);
+        assertNull(MDC.get("command"));
+        assertNull(MDC.get("guildId"));
+        assertNull(MDC.get("userId"));
     }
 }
