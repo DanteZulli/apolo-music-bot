@@ -1,18 +1,15 @@
 package com.zullid.apolo_music_bot.services;
 
-import org.springframework.stereotype.Service;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventListener;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
-
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 /**
  * Service responsible for managing the audio player using Lavaplayer.
@@ -34,20 +31,29 @@ public class AudioPlayerService {
     @Getter
     private AudioPlayer player;
 
+    /**
+     * Initializes the player manager, registers YouTube and remote sources, and creates the player.
+     */
     @PostConstruct
     public void init() {
         playerManager = new DefaultAudioPlayerManager();
 
         playerManager.registerSourceManager(new YoutubeAudioSourceManager());
         AudioSourceManagers.registerRemoteSources(
-                playerManager,
-                YoutubeAudioSourceManager.class);
+            playerManager,
+            YoutubeAudioSourceManager.class
+        );
 
         player = playerManager.createPlayer();
 
         log.info("AudioPlayer initialized successfully");
     }
 
+    /**
+     * Registers an event listener on the audio player.
+     *
+     * @param listener the listener to register
+     */
     public void addListener(AudioEventListener listener) {
         player.addListener(listener);
     }

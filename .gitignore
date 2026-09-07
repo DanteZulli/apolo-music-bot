@@ -1,202 +1,166 @@
 # ==============================================================================
 # Apolo Music Bot — .gitignore
-# Combined template: Gradle + Java + Spring Boot (+ IDEs / OS / security)
-# NOTE: `src/main/resources/application.properties` is intentionally TRACKED
-# (it only references ${DISCORD_BOT_TOKEN}), so application.properties/yml
-# patterns are deliberately NOT ignored here.
 # ==============================================================================
 
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# SECURITY & SENSITIVE DATA (ALWAYS FIRST!)
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-.env
-.env.*
-!.env.example
-!.env.sample
-secrets.yml
-*.crt
-*.key
-*.keystore
-*.pem
-*.secret
-*.token
-*_keys
-*_secrets
-*_tokens
-id_dsa
-id_rsa
-*.cer
-*.csr
-*.der
-*.jks
-*.p12
-*.p7b
-*.p7c
-*.pfx
-*.truststore
-
-# Local dev convenience (direnv). Samples stay tracked.
-.envrc
-!.envrc.example
-!.envrc.sample
+# Entries are alphabetically sorted; '!' re-includes stay after the pattern they override.
 
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 # GRADLE
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-.gradle/
 **/build/
 !**/src/**/build/
-build/
-buildNumber.properties
-.gradletasknamecache
+.cache/
+.gradle/
 .gradle-task-cache/
 .gradle-task-namecache/
-
-# Ignore Gradle GUI config
+.gradletasknamecache
+build/
+buildNumber.properties
 gradle-app.setting
 
-# Cache of project
-.cache/
-
-# Gradle verification metadata (uncomment to track it instead)
-# !gradle/verification-metadata.xml
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# IDEs & EDITORS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+*.iml
+*.ipr
+*.iws
+*.orig
+*.sw?
+*~
+.#*
+.*.md.html
+.apt_generated
+.classpath
+.idea/
+.project
+.recommenders
+.settings/
+.springBeans
+.sts4-cache
+.vscode/
+/.kotlin/
+/.nb-gradle/
+/dist/
+/nbbuild/
+/nbdist/
+/nbproject/private/
 
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 # JAVA / JVM
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# Compiled class files
 *.class
-
-# Package files (MUST come before the wrapper !exceptions below)
-*.jar
-*.war
-*.nar
+*.ctxt
 *.ear
-*.zip
-*.tar.gz
-*.rar
-
-# Keep the Gradle wrapper committable (last match wins, so these go AFTER *.jar)
+*.jar
 !gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.jar
 !gradle-wrapper.properties
 !gradle/wrapper/gradle-wrapper.properties
-
-# JVM crash logs
-hs_err_pid*
-replay_pid*
-
-# Test / coverage reports
-TEST-*.xml
-junit.xml
-testng-results.xml
-**/test-output/
-**/test-results/
-test-output/
-test-reports/
-test-results/
+*.nar
+*.rar
+*.tar.gz
+*.war
+*.zip
 .coverage
 .coverage.*
 .coverage.xml
 .coverage_html/
 .jacoco/
+.mtj.tmp/
 .sonar/
+**/test-output/
+**/test-results/
 checkstyle-result.xml
 cover/
 heapdump.hprof
-
-# Javadoc output
+hs_err_pid*
 javadoc/
+junit.xml
+replay_pid*
+test-output/
+test-reports/
+test-results/
+TEST-*.xml
+testng-results.xml
 
-# BlueJ / Mobile Tools for Java
-*.ctxt
-.mtj.tmp/
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# MISC PROJECT ARTIFACTS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+/code
+.git-hooks/
+build.log
+node_modules/
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# OS
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+.attach_pid*
+.DS_Store
+Desktop.ini
+Thumbs.db
+
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+# SECURITY & SENSITIVE DATA
+# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+.env
+.env.*
+!.env.example
+!.env.sample
+.envrc
+!.envrc.example
+!.envrc.sample
+*.cer
+*.crt
+*.csr
+*.der
+*.jks
+*.key
+*.keystore
+*.p12
+*.p7b
+*.p7c
+*.pem
+*.pfx
+*.secret
+*.token
+*.truststore
+*_keys
+*_secrets
+*_tokens
+id_dsa
+id_rsa
+secrets.yml
 
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
 # SPRING BOOT
 # ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
+*.log
+*.log.*
+*.o
+*.obj
+*.pid
+*.pid.lock
+*.tgz
 .factorypath
-.spring-devtools.properties
-.springBeans
-HELP.md
-dependency-reduced-pom.xml
-flattened-pom.xml
 .flattened-pom.xml
+.spring-devtools.properties
+_site/
+activemq-data/
+bin/
+!/**/src/**/bin
+dependency-reduced-pom.xml
+dump.rdb
+flattened-pom.xml
+HELP.md
+interpolated*.xml
+lib/
+logs/
+MANIFEST.MF
+manifest.yml
+out/
+overridedb.*
 pom.xml.next
 pom.xml.releaseBackup
 pom.xml.tag
 pom.xml.versionsBackup
 release.properties
-manifest.yml
-MANIFEST.MF
-activemq-data/
-dump.rdb
-overridedb.*
-interpolated*.xml
-logs/
-*.log
-*.log.*
-*.pid
-*.pid.lock
-*.tgz
-*.o
-*.obj
-out/
-bin/
-!/**/src/**/bin
-lib/
-_site/
-
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# IDEs & EDITORS
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# IntelliJ IDEA
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# Eclipse / STS
-.project
-.classpath
-.settings/
-.apt_generated
-.springBeans
-.sts4-cache
-.recommenders
-
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-# VS Code
-.vscode/
-
-# Kotlin
-/.kotlin/
-
-# Misc editor artifacts
-*.sw?
-*~
-.#*
-.*.md.html
-*.orig
-
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# OS
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-.DS_Store
-Thumbs.db
-Desktop.ini
-.attach_pid*
-
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-# MISC PROJECT ARTIFACTS
-# ••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••••
-node_modules/
-.git-hooks/
-build.log
-/code

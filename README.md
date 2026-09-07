@@ -1,4 +1,5 @@
 <!-- PROJECT SHIELDS -->
+
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
@@ -26,14 +27,6 @@
   </p>
 </div>
 
-## About
-
-Apolo plays music in your Discord voice channels through simple slash commands. Queue up tracks, pause, skip, and manage playback without leaving the chat.
-
-- Slash commands with queue management
-- Runs locally with Gradle or containerized with Docker / Podman
-- Voice encryption (DAVE) ready for current Discord requirements
-
 ## Quickstart
 
 ```bash
@@ -47,9 +40,9 @@ cp .envrc.sample .envrc # then set DISCORD_BOT_TOKEN
 
 If you like this bot or find the project interesting, don't forget to check out the libraries that made it possible and drop them a star.
 
-* [JDA](https://github.com/DV8FromTheWorld/JDA) - The Java library for Discord API
-* [LavaPlayer](https://github.com/lavalink-devs/lavaplayer) - Audio player library for Discord bots. We also use the [youtube-source](https://github.com/lavalink-devs/youtube-source) manager.
-  * Special thanks to the [original LavaPlayer](https://github.com/sedmelluq/lavaplayer), which inspired us to start building this bot before migrating to the fork.
+- [JDA](https://github.com/DV8FromTheWorld/JDA) - The Java library for Discord API
+- [LavaPlayer](https://github.com/lavalink-devs/lavaplayer) - Audio player library for Discord bots. We also use the [youtube-source](https://github.com/lavalink-devs/youtube-source) manager.
+  - Special thanks to the [original LavaPlayer](https://github.com/sedmelluq/lavaplayer), which inspired us to start building this bot before migrating to the fork.
 
 Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/MusicBot) and [FredBoat](https://github.com/freyacodes/archived-bot/), whose open-source projects served as excellent references and learning resources.
 
@@ -58,6 +51,7 @@ Special shoutout to the creators of [JMusicBot](https://github.com/jagrosh/Music
 This project is licensed under the GPL v3 License. See the `LICENSE` file for details.
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/DanteZulli/apolo-music-bot?style=for-the-badge
 [contributors-url]: https://github.com/DanteZulli/apolo-music-bot/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/DanteZulli/apolo-music-bot?style=for-the-badge

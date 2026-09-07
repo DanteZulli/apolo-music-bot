@@ -27,23 +27,36 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DiscordConfig {
 
-        @Value("${discord.bot.token}")
-        private String token;
+    @Value("${discord.bot.token}")
+    private String token;
 
-        @Bean
-        JDA jdaBuilder(ReadyListener readyListener, PlayerCommandListener playerCommandListener) {
-                return JDABuilder.createDefault(token)
-                                .enableIntents(
-                                                GatewayIntent.GUILD_MESSAGES,
-                                                GatewayIntent.GUILD_MEMBERS,
-                                                GatewayIntent.MESSAGE_CONTENT,
-                                                GatewayIntent.GUILD_VOICE_STATES)
-                                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                                .setChunkingFilter(ChunkingFilter.ALL)
-                                .setAudioModuleConfig(
-                                                new AudioModuleConfig().withDaveSessionFactory(
-                                                                new JDaveSessionFactory()))
-                                .addEventListeners(readyListener, playerCommandListener)
-                                .build();
-        }
+    /**
+     * Builds the JDA instance with voice intents, caching and voice encryption.
+     *
+     * @param readyListener listener notified when the bot is ready
+     * @param playerCommandListener listener handling music slash commands
+     * @return the configured and built JDA instance
+     */
+    @Bean
+    JDA jdaBuilder(
+        ReadyListener readyListener,
+        PlayerCommandListener playerCommandListener
+    ) {
+        return JDABuilder.createDefault(token)
+            .enableIntents(
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.GUILD_VOICE_STATES
+            )
+            .setMemberCachePolicy(MemberCachePolicy.ALL)
+            .setChunkingFilter(ChunkingFilter.ALL)
+            .setAudioModuleConfig(
+                new AudioModuleConfig().withDaveSessionFactory(
+                    new JDaveSessionFactory()
+                )
+            )
+            .addEventListeners(readyListener, playerCommandListener)
+            .build();
+    }
 }

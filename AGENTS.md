@@ -106,6 +106,7 @@ The project uses Lombok and Spring extensively:
 ### State Pattern
 
 The player uses a State pattern:
+
 - `PlayerState` (interface/base)
 - `ReadyState`, `PlayingState`, `PausedState` (implementations)
 - Each state handles relevant commands via `onPlay()`, `onPause()`, etc.
@@ -135,6 +136,7 @@ The player uses a State pattern:
 ### Discord Commands
 
 Available slash commands:
+
 - `/play <query>` - Play a song or add to queue
 - `/pause` - Pause playback
 - `/resume` - Resume playback

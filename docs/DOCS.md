@@ -34,8 +34,6 @@ Everything you need to get the bot running. For how the code fits together, see 
 
 ## Environment
 
-## Environment
-
 We recommend using [direnv](https://direnv.net/) with a `.envrc` file for a more convenient setup (over than overriding token values in `docker-compose.yml` or `.properties` files). This configuration is required for both local execution and Docker/Podman.
 
 Copy the sample file and set your token:
@@ -56,6 +54,7 @@ Pick one option.
 ### Local Execution
 
 Build and run the project using Gradle:
+
 ```bash
 ./gradlew build
 ./gradlew bootRun

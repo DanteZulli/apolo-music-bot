@@ -1,8 +1,8 @@
 # Architecture
 
-[Setup Guide](DOCS.md)
+Go back to [Setup Guide](DOCS.md)
 
-Goal: orient developers in the codebase. Full diagram: [class-diagram.puml](class-diagram.puml).
+Goal of this document: orient developers in the codebase. Full class diagram: [class-diagram.puml](class-diagram.puml).
 
 ## Player state pattern
 
@@ -26,18 +26,16 @@ src/main/java/com/zullid/apolo_music_bot/
 
 ## Key versions
 
-| Dependency | Version |
-|------------|---------|
-| Java | 25 |
-| Spring Boot | 4.1.1 |
-| JDA | 6.5.0 |
-| LavaPlayer (`dev.arbjerg`) | 2.2.7 |
-| YouTube source (`dev.lavalink.youtube:v2`) | 1.18.2 |
-| JDave | 0.1.8 |
+| Dependency                                 | Version |
+| ------------------------------------------ | ------- |
+| Java                                       | 25      |
+| Spring Boot                                | 4.1.1   |
+| JDA                                        | 6.5.0   |
+| LavaPlayer (`dev.arbjerg`)                 | 2.2.7   |
+| YouTube source (`dev.lavalink.youtube:v2`) | 1.18.2  |
+| JDave                                      | 0.1.8   |
 
 Voice requires DAVE encryption (JDA 6.3.2+ and JDave). Do not downgrade below these versions.
 
 > [!NOTE]
-> We keep dependencies fresh with [Dependabot](https://github.com/DanteZulli/apolo-music-bot/blob/main/.github/dependabot.yml) (weekly Gradle and Docker checks). Discord moves fast and an outdated bot goes stale quickly, so we stay up to date to keep it from silently rotting away over time.
-
-Code style and JDA practices live in [AGENTS.md](https://github.com/DanteZulli/apolo-music-bot/blob/main/AGENTS.md).
+> We keep dependencies fresh with [Dependabot](https://github.com/DanteZulli/apolo-music-bot/blob/main/.github/dependabot.yml). Discord moves fast and an outdated bot goes stale quickly, so we stay up to date to keep it from silently rotting away over time.

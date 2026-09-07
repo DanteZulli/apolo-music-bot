@@ -1,12 +1,10 @@
 package com.zullid.apolo_music_bot.config;
 
-import org.springframework.context.annotation.Configuration;
-
 import com.zullid.apolo_music_bot.handlers.AudioEventHandler;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
-
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for initializing audio-related components.
@@ -26,6 +24,9 @@ public class AudioConfig {
     private final AudioPlayerService audioPlayerService;
     private final AudioEventHandler audioEventHandler;
 
+    /**
+     * Registers the audio event handler on the audio player.
+     */
     @PostConstruct
     public void init() {
         audioPlayerService.addListener(audioEventHandler);

@@ -1,17 +1,15 @@
 package com.zullid.apolo_music_bot.player.state;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.zullid.apolo_music_bot.player.Player;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
 import com.zullid.apolo_music_bot.services.QueueService;
-
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
 /**
  * State representing the player is actively playing music.
@@ -35,50 +33,98 @@ public class PlayingState extends PlayerState {
         this.queueService = player.getQueueService();
     }
 
+    /**
+     * Loads the requested query and queues the resulting track or playlist.
+     * <p>
+     * Search results and YouTube automatic mixes (URLs containing {@code list=RD},
+     * generated when copying a song link from the browser address bar instead of
+     * the share button) only queue the selected or first track to avoid flooding
+     * the queue with an unwanted radio. Manually built playlists queue all tracks.
+     * On no matches or load failure an error is sent and the player returns to
+     * {@code ReadyState}.
+     * </p>
+     *
+     * @param event the slash command interaction containing the {@code query} option
+     */
     @Override
     public void onPlay(SlashCommandInteractionEvent event) {
         String query = event.getOption("query").getAsString();
         event.deferReply().queue();
 
-        audioPlayerService.getPlayerManager().loadItem(query, new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                queueService.addToQueue(track);
-                event.getHook().sendMessage("Added to queue: " + track.getInfo().title).queue();
-            }
-
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                if (playlist.isSearchResult() || query.contains("list=RD")) {
-                    // Search results or automatic mixes: just add the current/first track
-                    AudioTrack track = playlist.getSelectedTrack() != null ? playlist.getSelectedTrack() : playlist.getTracks().get(0);
+        audioPlayerService.getPlayerManager().loadItem(
+            query,
+            new AudioLoadResultHandler() {
+                @Override
+                public void trackLoaded(AudioTrack track) {
                     queueService.addToQueue(track);
-                    event.getHook().sendMessage("Added to queue: " + track.getInfo().title).queue();
-                } else {
-                    // Regular playlists (PL...): add all tracks
-                    for (AudioTrack track : playlist.getTracks()) {
+                    event
+                        .getHook()
+                        .sendMessage("Added to queue: " + track.getInfo().title)
+                        .queue();
+                }
+
+                @Override
+                public void playlistLoaded(AudioPlaylist playlist) {
+                    if (
+                        playlist.isSearchResult() || query.contains("list=RD")
+                    ) {
+                        // Search results or automatic mixes: just add the current/first track
+                        AudioTrack track =
+                            playlist.getSelectedTrack() != null
+                                ? playlist.getSelectedTrack()
+                                : playlist.getTracks().get(0);
                         queueService.addToQueue(track);
+                        event
+                            .getHook()
+                            .sendMessage(
+                                "Added to queue: " + track.getInfo().title
+                            )
+                            .queue();
+                    } else {
+                        // Regular playlists (PL...): add all tracks
+                        for (AudioTrack track : playlist.getTracks()) {
+                            queueService.addToQueue(track);
+                        }
+                        event
+                            .getHook()
+                            .sendMessage(
+                                "Added " +
+                                    playlist.getTracks().size() +
+                                    " tracks to queue"
+                            )
+                            .queue();
                     }
-                    event.getHook().sendMessage("Added " + playlist.getTracks().size() + " tracks to queue").queue();
+                }
+
+                @Override
+                public void noMatches() {
+                    event
+                        .getHook()
+                        .sendMessage("No matches found for: " + query)
+                        .queue();
+                    player.setState(new ReadyState(player));
+                }
+
+                @Override
+                public void loadFailed(FriendlyException exception) {
+                    event
+                        .getHook()
+                        .sendMessage(
+                            "Error loading track: " + exception.getMessage()
+                        )
+                        .queue();
+                    log.error("Error loading track", exception);
+                    player.setState(new ReadyState(player));
                 }
             }
-
-
-            @Override
-            public void noMatches() {
-                event.getHook().sendMessage("No matches found for: " + query).queue();
-                player.setState(new ReadyState(player));
-            }
-
-            @Override
-            public void loadFailed(FriendlyException exception) {
-                event.getHook().sendMessage("Error loading track: " + exception.getMessage()).queue();
-                log.error("Error loading track", exception);
-                player.setState(new ReadyState(player));
-            }
-        });
+        );
     }
 
+    /**
+     * Pauses playback and transitions to {@code PausedState}.
+     *
+     * @param event the slash command interaction
+     */
     @Override
     public void onPause(SlashCommandInteractionEvent event) {
         AudioPlayer audioPlayer = audioPlayerService.getPlayer();
@@ -87,11 +133,21 @@ public class PlayingState extends PlayerState {
         player.setState(new PausedState(player));
     }
 
+    /**
+     * Replies that resume is not needed while already playing.
+     *
+     * @param event the slash command interaction
+     */
     @Override
     public void onResume(SlashCommandInteractionEvent event) {
         event.reply("Cannot resume: player is already playing.").queue();
     }
 
+    /**
+     * Stops playback, clears the queue and transitions to {@code ReadyState}.
+     *
+     * @param event the slash command interaction
+     */
     @Override
     public void onStop(SlashCommandInteractionEvent event) {
         queueService.clearQueue();
@@ -100,6 +156,11 @@ public class PlayingState extends PlayerState {
         player.setState(new ReadyState(player));
     }
 
+    /**
+     * Skips the current track and advances the queue.
+     *
+     * @param event the slash command interaction
+     */
     @Override
     public void onSkip(SlashCommandInteractionEvent event) {
         queueService.skipCurrentTrack();
