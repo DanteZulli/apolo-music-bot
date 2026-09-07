@@ -74,4 +74,29 @@ class ApoloMusicBotApplicationTests {
     void contextLoads() {
         assertThat(context.getBean(JDA.class)).isNotNull();
     }
+
+    /**
+     * Tests that the entry point boots the Spring application.
+     * <p>
+     * Given stubbed {@code SpringApplication}, when {@code main} runs, then the
+     * application is booted with the given arguments without touching the network.
+     * </p>
+     */
+    @Test
+    void main_bootsSpringApplication() {
+        String[] args = {};
+        try (
+            MockedStatic<org.springframework.boot.SpringApplication> springApplication =
+                mockStatic(org.springframework.boot.SpringApplication.class)
+        ) {
+            ApoloMusicBotApplication.main(args);
+
+            springApplication.verify(() ->
+                org.springframework.boot.SpringApplication.run(
+                    ApoloMusicBotApplication.class,
+                    args
+                )
+            );
+        }
+    }
 }

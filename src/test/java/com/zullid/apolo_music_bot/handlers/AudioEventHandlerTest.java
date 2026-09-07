@@ -129,6 +129,27 @@ class AudioEventHandlerTest {
     }
 
     /**
+     * Tests that a still-playing track keeps the current state despite an empty queue.
+     * <p>
+     * Given end reason {@code FINISHED} with an empty queue but another track already
+     * playing, when {@code onTrackEnd} runs, then the next track is requested without
+     * transitioning to {@code ReadyState}.
+     * </p>
+     */
+    @Test
+    void onTrackEnd_withEmptyQueueButTrackPlaying_doesNotTransitionToReadyState() {
+        AudioTrackEndReason reason = AudioTrackEndReason.FINISHED;
+        when(queueService.isQueueEmpty()).thenReturn(true);
+        when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
+        when(audioPlayer.getPlayingTrack()).thenReturn(track);
+
+        handler.onTrackEnd(audioPlayer, track, reason);
+
+        verify(queueService).playNextTrack();
+        verify(player, never()).setState(any(ReadyState.class));
+    }
+
+    /**
      * Tests that a replaced track does not advance the queue.
      * <p>
      * Given end reason {@code REPLACED}, when {@code onTrackEnd} runs, then no next track
