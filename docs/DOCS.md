@@ -9,7 +9,6 @@ Everything you need to get the bot running. For how the code fits together, see 
 - [Run](#run)
   - [Local execution](#local-execution)
   - [Docker / Podman](#docker--podman)
-- [Troubleshooting](troubleshooting.md)
 
 ## Bot Setup on Discord Developer Portal
 
@@ -74,4 +73,5 @@ docker compose up --build -d
 podman compose up --build -d
 ```
 
-Stuck? See [Troubleshooting](troubleshooting.md).
+> [!NOTE]
+> Image references use full registry paths to ensure compatibility with [Podman](https://podman.io/) and environments where `unqualified-search-registries` are not configured (such as [Debian](https://wiki.debian.org/Podman))
