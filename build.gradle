@@ -77,12 +77,10 @@ tasks.named('jacocoTestCoverageVerification', JacocoCoverageVerification) {
                 value = 'COVEREDRATIO'
                 minimum = 1.0
             }
-            // Only known gap: the unreachable queue.offer() false side
-            // until the queue is bounded (current ratio 59/60).
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.98
+                minimum = 1.0
             }
         }
     }
