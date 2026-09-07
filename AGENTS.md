@@ -1,7 +1,5 @@
 # AGENTS.md - Apolo Music Bot Development Guide
 
-This file provides guidelines and instructions for agentic coding agents working on this repository.
-
 ## Project Overview
 
 Apolo Music Bot is a Discord music bot built with Java, Spring Boot, and Gradle. It uses JDA for Discord API integration and LavaPlayer for audio streaming.
@@ -49,7 +47,8 @@ For Docker/Podman: Use `docker-compose.yml` or set environment variables in your
 - **Package naming**: `com.zullid.apolo_music_bot.*`
 - **Java version**: 25 (use latest Java features when appropriate)
 - **Build tool**: Gradle (use `./gradlew` wrapper, not system `gradle`)
-- **Spring Boot**: Latest stable
+- **Versions**: declared in the `ext` block of `build.gradle`; do not duplicate them in docs
+- **Formatter**: no formatter plugin is configured in the build; match the existing 4-space style instead of reformatting
 
 ### Project Structure
 
@@ -71,14 +70,14 @@ src/
 ### Imports
 
 - Use explicit imports (no wildcard `.*` except for static imports)
-- Order: standard Java → external libraries → project imports
+- Follow the existing per-file import order; there is no enforced grouping
 - Use Lombok to reduce boilerplate
 
 ### Naming Conventions
 
 - **Classes**: PascalCase (e.g., `AudioPlayerService`, `PlayerCommandListener`)
 - **Methods/variables**: camelCase (e.g., `play()`, `addListener()`)
-- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_QUEUE_SIZE`)
+- **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_TITLE_LENGTH`)
 - **Packages**: lowercase (e.g., `com.zullid.apolo_music_bot.services`)
 
 ### Annotations
@@ -94,8 +93,10 @@ The project uses Lombok and Spring extensively:
 ### Logging
 
 - Use Lombok's `@Slf4j` for all classes
-- Use appropriate log levels: `log.info()`, `log.debug()`, `log.warn()`, `log.error()`
-- Include contextual information in log messages
+- `info`: startup, lifecycle and operator actions only; routine per-track detail goes to `debug`
+- Command flow context (`command`, `guildId`, `userId`) travels in the SLF4J MDC set by `PlayerCommandListener`; callbacks on LavaPlayer threads log identifiers inline (no MDC there)
+- Levels are env-overridable (`LOGGING_LEVEL_<PACKAGE>=DEBUG`); JDA stays at `WARN` by default
+- Output is configured in `logback-spring.xml`: plain text on `dev`, JSON to stdout plus rolling file otherwise
 
 ### Error Handling
 
@@ -107,7 +108,7 @@ The project uses Lombok and Spring extensively:
 
 The player uses a State pattern:
 
-- `PlayerState` (interface/base)
+- `PlayerState` (abstract base)
 - `ReadyState`, `PlayingState`, `PausedState` (implementations)
 - Each state handles relevant commands via `onPlay()`, `onPause()`, etc.
 
@@ -122,8 +123,7 @@ The player uses a State pattern:
 ### Java Features
 
 - Use Java text blocks (triple quotes) for multi-line strings
-- Use records where immutable data containers are needed
-- Use `switch` expressions for pattern matching on command names
+- Use `switch` statements on command names (see `PlayerCommandListener`)
 
 ### Testing
 
@@ -132,6 +132,8 @@ The player uses a State pattern:
 - Run tests with `./gradlew test`
 - Run a single test class with `./gradlew test --tests "<ClassName>"`
 - Unit tests cover services, handlers, player states, and listeners
+- `test` also generates the JaCoCo HTML report (`build/reports/jacoco`); keep 100% line/method coverage — the only accepted branch gap is the unreachable `queue.offer()` false side until the queue is bounded
+- Document tests with class-level scope plus per-test Given/When/Then Javadoc, keeping `@author`; main sources carry full method-level Javadoc (`@param`/`@return`) with the doc comment placed before annotations
 
 ### Discord Commands
 
