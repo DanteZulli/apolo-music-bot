@@ -40,8 +40,9 @@ public class PlayingState extends PlayerState {
      * generated when copying a song link from the browser address bar instead of
      * the share button) only queue the selected or first track to avoid flooding
      * the queue with an unwanted radio. Manually built playlists queue all tracks.
-     * On no matches or load failure an error is sent and the player returns to
-     * {@code ReadyState}.
+     * Tracks rejected because the queue already holds {@code MAX_QUEUE_SIZE}
+     * tracks are reported instead of being silently dropped. On no matches or
+     * load failure an error is sent and the player returns to {@code ReadyState}.
      * </p>
      *
      * @param event the slash command interaction containing the {@code query} option
@@ -56,11 +57,7 @@ public class PlayingState extends PlayerState {
             new AudioLoadResultHandler() {
                 @Override
                 public void trackLoaded(AudioTrack track) {
-                    queueService.addToQueue(track);
-                    event
-                        .getHook()
-                        .sendMessage("Added to queue: " + track.getInfo().title)
-                        .queue();
+                    queueSingleTrack(event, track);
                 }
 
                 @Override
@@ -73,26 +70,37 @@ public class PlayingState extends PlayerState {
                             playlist.getSelectedTrack() != null
                                 ? playlist.getSelectedTrack()
                                 : playlist.getTracks().get(0);
-                        queueService.addToQueue(track);
-                        event
-                            .getHook()
-                            .sendMessage(
-                                "Added to queue: " + track.getInfo().title
-                            )
-                            .queue();
+                        queueSingleTrack(event, track);
                     } else {
                         // Regular playlists (PL...): add all tracks
+                        int added = 0;
                         for (AudioTrack track : playlist.getTracks()) {
-                            queueService.addToQueue(track);
+                            if (queueService.addToQueue(track)) {
+                                added++;
+                            }
                         }
-                        event
-                            .getHook()
-                            .sendMessage(
-                                "Added " +
-                                    playlist.getTracks().size() +
-                                    " tracks to queue"
-                            )
-                            .queue();
+                        int total = playlist.getTracks().size();
+                        if (added == total) {
+                            event
+                                .getHook()
+                                .sendMessage(
+                                    "Added " + total + " tracks to queue"
+                                )
+                                .queue();
+                        } else {
+                            event
+                                .getHook()
+                                .sendMessage(
+                                    "Added " +
+                                        added +
+                                        " of " +
+                                        total +
+                                        " tracks to queue (queue is full, max " +
+                                        QueueService.MAX_QUEUE_SIZE +
+                                        ")"
+                                )
+                                .queue();
+                        }
                     }
                 }
 
@@ -122,6 +130,33 @@ public class PlayingState extends PlayerState {
                 }
             }
         );
+    }
+
+    /**
+     * Queues a single track, reporting a full queue instead of dropping it silently.
+     *
+     * @param event the slash command interaction used for the reply
+     * @param track the track to queue
+     */
+    private void queueSingleTrack(
+        SlashCommandInteractionEvent event,
+        AudioTrack track
+    ) {
+        if (queueService.addToQueue(track)) {
+            event
+                .getHook()
+                .sendMessage("Added to queue: " + track.getInfo().title)
+                .queue();
+        } else {
+            event
+                .getHook()
+                .sendMessage(
+                    "Queue is full (max " +
+                        QueueService.MAX_QUEUE_SIZE +
+                        " tracks)"
+                )
+                .queue();
+        }
     }
 
     /**

@@ -16,8 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * Unit tests for {@link QueueService}.
  * <p>
- * Verifies immediate playback versus queueing, skipping, clearing, snapshot copies and
- * size checks, using a mocked player service and player.
+ * Verifies immediate playback versus queueing, the {@code MAX_QUEUE_SIZE} cap,
+ * skipping, clearing, snapshot copies and size checks, using a mocked player
+ * service and player.
  * </p>
  *
  * @author Dante Zulli (dantezulli2004@gmail.com)
@@ -99,6 +100,27 @@ class QueueServiceTest {
 
         assertEquals(1, queueService.getQueueSize());
         verify(audioPlayer, never()).playTrack(any(AudioTrack.class));
+    }
+
+    /**
+     * Tests that a full queue rejects new tracks.
+     * <p>
+     * Given {@code MAX_QUEUE_SIZE} queued tracks, when another track is added,
+     * then it is rejected and the queue size stays capped.
+     * </p>
+     */
+    @Test
+    void addToQueue_whenQueueFull_rejectsTrack() {
+        AudioTrack playingTrack = createMockTrack("Playing");
+        when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
+        when(audioPlayer.getPlayingTrack()).thenReturn(playingTrack);
+
+        for (int i = 0; i < QueueService.MAX_QUEUE_SIZE; i++) {
+            assertTrue(queueService.addToQueue(createMockTrack("Queued " + i)));
+        }
+
+        assertFalse(queueService.addToQueue(createMockTrack("Overflow")));
+        assertEquals(QueueService.MAX_QUEUE_SIZE, queueService.getQueueSize());
     }
 
     /**

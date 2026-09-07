@@ -33,7 +33,8 @@ import org.mockito.quality.Strictness;
  * Unit tests for {@link PlayingState}.
  * <p>
  * Verifies track and playlist loading (search results, selected tracks, full manual
- * playlists and automatic {@code list=RD} mixes), error paths returning to ready state,
+ * playlists and automatic {@code list=RD} mixes), full-queue reporting, error paths
+ * returning to ready state,
  * plus pause, resume, stop and skip behavior, using mocked player services and events.
  * </p>
  *
@@ -151,10 +152,43 @@ class PlayingStateTest {
             eq("some query"),
             handlerCaptor.capture()
         );
+        when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().trackLoaded(track);
 
         verify(queueService).addToQueue(track);
         verify(hook).sendMessage("Added to queue: Test Song");
+        verify(editAction).queue();
+    }
+
+    /**
+     * Tests that a single track rejected by a full queue is reported.
+     * <p>
+     * Given a full queue, when the load callback fires, then a queue-full message
+     * is sent instead of the added confirmation.
+     * </p>
+     */
+    @Test
+    void onPlay_trackLoaded_whenQueueFull_repliesQueueFull() {
+        when(optionMapping.getAsString()).thenReturn("some query");
+        AudioTrackInfo info = new AudioTrackInfo(
+            "Test Song",
+            "test",
+            0L,
+            "id",
+            false,
+            null
+        );
+        when(track.getInfo()).thenReturn(info);
+
+        playingState.onPlay(event);
+        verify(playerManager).loadItem(
+            eq("some query"),
+            handlerCaptor.capture()
+        );
+        when(queueService.addToQueue(track)).thenReturn(false);
+        handlerCaptor.getValue().trackLoaded(track);
+
+        verify(hook).sendMessage("Queue is full (max 50 tracks)");
         verify(editAction).queue();
     }
 
@@ -185,6 +219,7 @@ class PlayingStateTest {
             eq("search query"),
             handlerCaptor.capture()
         );
+        when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);
@@ -217,6 +252,7 @@ class PlayingStateTest {
             eq("search query"),
             handlerCaptor.capture()
         );
+        when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);
@@ -263,11 +299,65 @@ class PlayingStateTest {
             eq("https://youtube.com/playlist?list=PLabc"),
             handlerCaptor.capture()
         );
+        when(queueService.addToQueue(track1)).thenReturn(true);
+        when(queueService.addToQueue(track2)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track1);
         verify(queueService).addToQueue(track2);
         verify(hook).sendMessage("Added 2 tracks to queue");
+    }
+
+    /**
+     * Tests that a partially queued playlist reports the skipped tracks.
+     * <p>
+     * Given a manual playlist where the queue fills up midway, when loaded, then
+     * the reply reports how many tracks were added out of the total.
+     * </p>
+     */
+    @Test
+    void onPlay_playlistLoaded_regularPlaylist_whenQueueFull_reportsPartialAdd() {
+        when(optionMapping.getAsString()).thenReturn(
+            "https://youtube.com/playlist?list=PLabc"
+        );
+        when(playlist.isSearchResult()).thenReturn(false);
+        AudioTrackInfo info1 = new AudioTrackInfo(
+            "Track 1",
+            "test",
+            0L,
+            "id1",
+            false,
+            null
+        );
+        AudioTrackInfo info2 = new AudioTrackInfo(
+            "Track 2",
+            "test",
+            0L,
+            "id2",
+            false,
+            null
+        );
+        AudioTrack track1 = mock(AudioTrack.class);
+        AudioTrack track2 = mock(AudioTrack.class);
+        when(track1.getInfo()).thenReturn(info1);
+        when(track2.getInfo()).thenReturn(info2);
+        when(playlist.getTracks()).thenReturn(List.of(track1, track2));
+        when(playlist.getSelectedTrack()).thenReturn(null);
+
+        playingState.onPlay(event);
+        verify(playerManager).loadItem(
+            eq("https://youtube.com/playlist?list=PLabc"),
+            handlerCaptor.capture()
+        );
+        when(queueService.addToQueue(track1)).thenReturn(true);
+        when(queueService.addToQueue(track2)).thenReturn(false);
+        handlerCaptor.getValue().playlistLoaded(playlist);
+
+        verify(queueService).addToQueue(track1);
+        verify(queueService).addToQueue(track2);
+        verify(hook).sendMessage(
+            "Added 1 of 2 tracks to queue (queue is full, max 50)"
+        );
     }
 
     /**
@@ -297,6 +387,7 @@ class PlayingStateTest {
             eq("some song list=RDmix"),
             handlerCaptor.capture()
         );
+        when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);

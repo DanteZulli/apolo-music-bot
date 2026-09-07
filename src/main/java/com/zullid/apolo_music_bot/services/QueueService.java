@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
  * Service responsible for managing the music queue.
  * <p>
  * This service handles adding tracks to the queue, playing the next track,
- * skipping tracks, clearing the queue, and checking queue status. It uses an
- * unbounded {@link BlockingQueue} to store {@code AudioTrack} instances; bounding
- * the queue is planned for the future. When nothing is playing, {@code addToQueue}
- * starts playback immediately instead of queueing.
+ * skipping tracks, clearing the queue, and checking queue status. It uses a
+ * bounded {@link BlockingQueue} holding at most {@code MAX_QUEUE_SIZE} tracks,
+ * matching the number of queued tracks shown by the {@code /queue} command.
+ * When nothing is playing, {@code addToQueue} starts playback immediately
+ * instead of queueing.
  * </p>
  *
  * @see AudioPlayerService
@@ -29,28 +30,45 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QueueService {
 
+    /** Maximum number of tracks held in the queue (excluding the playing track). */
+    public static final int MAX_QUEUE_SIZE = 50;
+
     private final AudioPlayerService audioPlayerService;
 
     @Getter
-    private final BlockingQueue<AudioTrack> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<AudioTrack> queue = new LinkedBlockingQueue<>(
+        MAX_QUEUE_SIZE
+    );
 
     /**
      * Adds a track to the queue or plays it immediately when idle.
+     * <p>
+     * When the queue already holds {@code MAX_QUEUE_SIZE} tracks the track is
+     * rejected.
+     * </p>
      *
      * @param track the track to add or play
+     * @return {@code true} when the track will be played, {@code false} when rejected (queue full)
      */
-    public void addToQueue(AudioTrack track) {
+    public boolean addToQueue(AudioTrack track) {
         if (audioPlayerService.getPlayer().getPlayingTrack() == null) {
             audioPlayerService.getPlayer().playTrack(track);
             log.debug(
                 "Playing immediately (queue was idle): {}",
                 track.getInfo().title
             );
-        } else {
-            if (queue.offer(track)) {
-                log.debug("Added to queue: {}", track.getInfo().title);
-            }
+            return true;
         }
+        if (queue.offer(track)) {
+            log.debug("Added to queue: {}", track.getInfo().title);
+            return true;
+        }
+        log.warn(
+            "Queue is full (max {}), rejecting: {}",
+            MAX_QUEUE_SIZE,
+            track.getInfo().title
+        );
+        return false;
     }
 
     /**

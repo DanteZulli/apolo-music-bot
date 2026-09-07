@@ -118,9 +118,9 @@ public class Player {
     /**
      * Replies with the current track and queued tracks.
      * <p>
-     * Titles are truncated to {@code MAX_TITLE_LENGTH} (32) and at most 50 queued
-     * tracks are shown so the reply stays within the Discord 2000-character message
-     * limit.
+     * Titles are truncated to {@code MAX_TITLE_LENGTH} (32) and at most
+     * {@code MAX_QUEUE_SIZE} queued tracks are shown so the reply stays within
+     * the Discord 2000-character message limit.
      * </p>
      *
      * @param event the slash command interaction
@@ -150,7 +150,10 @@ public class Player {
         if (queueList.isEmpty()) {
             sb.append("  (empty)");
         } else {
-            int maxDisplay = Math.min(50, queueList.size());
+            int maxDisplay = Math.min(
+                QueueService.MAX_QUEUE_SIZE,
+                queueList.size()
+            );
             for (int i = 0; i < maxDisplay; i++) {
                 sb.append(i + 1)
                     .append(". ")
@@ -163,7 +166,7 @@ public class Player {
                     .append("\n");
             }
 
-            int remaining = queueList.size() - 50;
+            int remaining = queueList.size() - QueueService.MAX_QUEUE_SIZE;
             if (remaining > 0) {
                 sb.append("... and ").append(remaining).append(" more song(s)");
             }
