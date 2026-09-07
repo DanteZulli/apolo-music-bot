@@ -37,4 +37,7 @@ src/main/java/com/zullid/apolo_music_bot/
 
 Voice requires DAVE encryption (JDA 6.3.2+ and JDave). Do not downgrade below these versions.
 
+> [!NOTE]
+> We keep dependencies fresh with [Dependabot](https://github.com/DanteZulli/apolo-music-bot/blob/main/.github/dependabot.yml) (weekly Gradle and Docker checks). Discord moves fast and an outdated bot goes stale quickly, so we stay up to date to keep it from silently rotting away over time.
+
 Code style and JDA practices live in [AGENTS.md](https://github.com/DanteZulli/apolo-music-bot/blob/main/AGENTS.md).
