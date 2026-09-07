@@ -132,7 +132,8 @@ The player uses a State pattern:
 - Run tests with `./gradlew test`
 - Run a single test class with `./gradlew test --tests "<ClassName>"`
 - Unit tests cover services, handlers, player states, and listeners
-- `test` also generates the JaCoCo HTML report (`build/reports/jacoco`); keep 100% line/method coverage — the only accepted branch gap is the unreachable `queue.offer()` false side until the queue is bounded
+- `test` also generates the JaCoCo HTML report (`build/reports/jacoco`); keep 100% instruction/line/method/branch coverage with no exceptions
+- Green tests alone are not approval: `test` always runs the coverage gate afterwards, so only a fully `BUILD SUCCESSFUL` run counts — a red gate fails the build even with all tests passing
 - Document tests with class-level scope plus per-test Given/When/Then Javadoc, keeping `@author`; main sources carry full method-level Javadoc (`@param`/`@return`) with the doc comment placed before annotations
 
 ### Discord Commands
