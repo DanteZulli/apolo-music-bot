@@ -15,7 +15,7 @@ java {
 }
 
 ext {
-    jdaVersion = '6.6.0'
+    jdaVersion = '6.7.0'
     lavaplayerVersion = '2.2.7'
     lavalinkYoutubeVersion = '1.18.2'
     jdaveVersion = '0.1.8'
