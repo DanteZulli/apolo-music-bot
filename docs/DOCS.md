@@ -8,7 +8,7 @@ Everything you need to get the bot running. For how the code fits together, see 
 - [Environment](#environment)
 - [Run](#run)
   - [Local execution](#local-execution)
-  - [Docker / Podman](#docker--podman)
+  - [Docker](#docker)
 
 ## Bot Setup on Discord Developer Portal
 
@@ -34,7 +34,7 @@ Everything you need to get the bot running. For how the code fits together, see 
 
 ## Environment
 
-We recommend using [direnv](https://direnv.net/) with a `.envrc` file for a more convenient setup (over than overriding token values in `docker-compose.yml` or `.properties` files). This configuration is required for both local execution and Docker/Podman.
+We recommend using [direnv](https://direnv.net/) with a `.envrc` file for a more convenient setup (over than overriding token values in `docker-compose.yml` or `.properties` files). This configuration is required for both local execution and Docker.
 
 Copy the sample file and set your token:
 
@@ -60,17 +60,14 @@ Build and run the project using Gradle:
 ./gradlew bootRun
 ```
 
-### Docker / Podman
+### Docker
 
-The project is fully dockerized. You can build and run the bot using Docker Compose or Podman Compose:
+The project is fully dockerized. You can build and run the bot using Docker Compose:
 
 ```bash
 # Build and start in background
 docker compose up --build -d
-
-# Using Podman
-podman compose up --build -d
 ```
 
 > [!NOTE]
-> Image references use full registry paths to ensure compatibility with [Podman](https://podman.io/) and environments where `unqualified-search-registries` are not configured (such as [Debian](https://wiki.debian.org/Podman))
+> Image references use full registry paths (`docker.io/library/...`) instead of relying on unqualified search registries, so they resolve the same way on every host configuration.

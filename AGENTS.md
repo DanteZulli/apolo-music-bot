@@ -38,7 +38,7 @@ The bot requires a `DISCORD_BOT_TOKEN` environment variable. The project uses `.
 export DISCORD_BOT_TOKEN=your_discord_token_here
 ```
 
-For Docker/Podman: Use `docker-compose.yml` or set environment variables in your deployment.
+For Docker: Use `docker-compose.yml` or set environment variables in your deployment.
 
 ## Code Style Guidelines
 
@@ -79,6 +79,13 @@ src/
 - **Methods/variables**: camelCase (e.g., `play()`, `addListener()`)
 - **Constants**: UPPER_SNAKE_CASE (e.g., `MAX_TITLE_LENGTH`)
 - **Packages**: lowercase (e.g., `com.zullid.apolo_music_bot.services`)
+
+### String Constants and Class Layout (mandatory for main and test code)
+
+- Declare every string literal as `private static final String` (or `public` only when shared, e.g., `MAX_QUEUE_SIZE`) at the top of the class, using UPPER_SNAKE_CASE; format templates carry a `_FORMAT` suffix (e.g., `MSG_ADDED_TRACKS_FORMAT = "Added %d tracks to queue"`)
+- Never concatenate strings with `+` and never use `StringBuilder`/`StringBuffer`/`append` for messages; interpolate with `CONSTANT.formatted(args)` and compose with `String.join` plus small `%s` templates (e.g., `TWO_PART_FORMAT = "%s%s"`)
+- Class member order is strict: constants/static fields first, then instance fields, constructor, `@PostConstruct`/`@BeforeEach` setup, `@Override` public methods, other public methods, package-private methods, and finally private helpers
+- Exception: annotation values that cannot self-reference (e.g., `@SpringBootTest(properties = "discord.bot.token=test-token")`) may keep the literal inline
 
 ### Annotations
 
