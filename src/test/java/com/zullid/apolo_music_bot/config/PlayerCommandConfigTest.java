@@ -34,6 +34,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PlayerCommandConfigTest {
 
+    private static final String COMMAND_PLAY = "play";
+    private static final String COMMAND_PAUSE = "pause";
+    private static final String COMMAND_RESUME = "resume";
+    private static final String COMMAND_STOP = "stop";
+    private static final String COMMAND_SKIP = "skip";
+    private static final String COMMAND_HELP = "help";
+    private static final String COMMAND_QUEUE = "queue";
+    private static final String FAILURE_MESSAGE = "boom";
+
     @Mock
     private JDA jda;
 
@@ -84,7 +93,18 @@ class PlayerCommandConfigTest {
             .map(CommandData::getName)
             .collect(Collectors.toSet());
 
-        assertEquals(Set.of("play", "pause", "resume", "stop", "skip", "help", "queue"), names);
+        assertEquals(
+            Set.of(
+                COMMAND_PLAY,
+                COMMAND_PAUSE,
+                COMMAND_RESUME,
+                COMMAND_STOP,
+                COMMAND_SKIP,
+                COMMAND_HELP,
+                COMMAND_QUEUE
+            ),
+            names
+        );
     }
 
     /**
@@ -101,6 +121,8 @@ class PlayerCommandConfigTest {
         verify(updateAction).queue(successCaptor.capture(), failureCaptor.capture());
 
         assertDoesNotThrow(() -> successCaptor.getValue().accept(List.of()));
-        assertDoesNotThrow(() -> failureCaptor.getValue().accept(new RuntimeException("boom")));
+        assertDoesNotThrow(() ->
+            failureCaptor.getValue().accept(new RuntimeException(FAILURE_MESSAGE))
+        );
     }
 }

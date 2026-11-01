@@ -27,6 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class VoiceChannelServiceTest {
 
+    private static final String CHANNEL_NAME = "Test Channel";
+
     @Mock
     private AudioPlayerService audioPlayerService;
 
@@ -192,7 +194,7 @@ class VoiceChannelServiceTest {
         when(member.getGuild()).thenReturn(guild);
         when(guild.getAudioManager()).thenReturn(audioManager);
         when(audioManager.isConnected()).thenReturn(false);
-        when(voiceChannel.getName()).thenReturn("Test Channel");
+        when(voiceChannel.getName()).thenReturn(CHANNEL_NAME);
 
         boolean result = voiceChannelService.joinVoiceChannel(member);
 

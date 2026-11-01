@@ -24,6 +24,29 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 @Slf4j
 public class PlayingState extends PlayerState {
 
+    private static final String OPTION_QUERY = "query";
+    private static final String AUTOMIX_MARKER = "list=RD";
+    private static final String MSG_ADDED_TRACKS_FORMAT =
+        "Added %d tracks to queue";
+    private static final String MSG_ADDED_PARTIAL_FORMAT =
+        "Added %d of %d tracks to queue (queue is full, max %d)";
+    private static final String MSG_NO_MATCHES_FORMAT =
+        "No matches found for: %s";
+    private static final String MSG_LOAD_FAILED_FORMAT =
+        "Error loading track: %s";
+    private static final String MSG_ADDED_SINGLE_FORMAT =
+        "Added to queue: %s";
+    private static final String MSG_QUEUE_FULL_FORMAT =
+        "Queue is full (max %d tracks)";
+    private static final String MSG_PAUSED = "Paused the current track";
+    private static final String MSG_CANNOT_RESUME =
+        "Cannot resume: player is already playing.";
+    private static final String MSG_STOPPED =
+        "Stopped playback and cleared the queue";
+    private static final String MSG_SKIPPED = "Skipped to the next track";
+    private static final String LOG_LOAD_FAILED_FORMAT =
+        "Error loading track for query: {}";
+
     private final AudioPlayerService audioPlayerService;
     private final QueueService queueService;
 
@@ -49,7 +72,7 @@ public class PlayingState extends PlayerState {
      */
     @Override
     public void onPlay(SlashCommandInteractionEvent event) {
-        String query = event.getOption("query").getAsString();
+        String query = event.getOption(OPTION_QUERY).getAsString();
         event.deferReply().queue();
 
         audioPlayerService.getPlayerManager().loadItem(
@@ -63,7 +86,8 @@ public class PlayingState extends PlayerState {
                 @Override
                 public void playlistLoaded(AudioPlaylist playlist) {
                     if (
-                        playlist.isSearchResult() || query.contains("list=RD")
+                        playlist.isSearchResult() ||
+                        query.contains(AUTOMIX_MARKER)
                     ) {
                         // Search results or automatic mixes: just add the current/first track
                         AudioTrack track =
@@ -84,20 +108,18 @@ public class PlayingState extends PlayerState {
                             event
                                 .getHook()
                                 .sendMessage(
-                                    "Added " + total + " tracks to queue"
+                                    MSG_ADDED_TRACKS_FORMAT.formatted(total)
                                 )
                                 .queue();
                         } else {
                             event
                                 .getHook()
                                 .sendMessage(
-                                    "Added " +
-                                        added +
-                                        " of " +
-                                        total +
-                                        " tracks to queue (queue is full, max " +
-                                        QueueService.MAX_QUEUE_SIZE +
-                                        ")"
+                                    MSG_ADDED_PARTIAL_FORMAT.formatted(
+                                        added,
+                                        total,
+                                        QueueService.MAX_QUEUE_SIZE
+                                    )
                                 )
                                 .queue();
                         }
@@ -108,7 +130,7 @@ public class PlayingState extends PlayerState {
                 public void noMatches() {
                     event
                         .getHook()
-                        .sendMessage("No matches found for: " + query)
+                        .sendMessage(MSG_NO_MATCHES_FORMAT.formatted(query))
                         .queue();
                     player.setState(new ReadyState(player));
                 }
@@ -118,11 +140,13 @@ public class PlayingState extends PlayerState {
                     event
                         .getHook()
                         .sendMessage(
-                            "Error loading track: " + exception.getMessage()
+                            MSG_LOAD_FAILED_FORMAT.formatted(
+                                exception.getMessage()
+                            )
                         )
                         .queue();
                     log.error(
-                        "Error loading track for query: {}",
+                        LOG_LOAD_FAILED_FORMAT,
                         query,
                         exception
                     );
@@ -130,6 +154,53 @@ public class PlayingState extends PlayerState {
                 }
             }
         );
+    }
+
+    /**
+     * Pauses playback and transitions to {@code PausedState}.
+     *
+     * @param event the slash command interaction
+     */
+    @Override
+    public void onPause(SlashCommandInteractionEvent event) {
+        AudioPlayer audioPlayer = audioPlayerService.getPlayer();
+        audioPlayer.setPaused(true);
+        event.reply(MSG_PAUSED).queue();
+        player.setState(new PausedState(player));
+    }
+
+    /**
+     * Replies that resume is not needed while already playing.
+     *
+     * @param event the slash command interaction
+     */
+    @Override
+    public void onResume(SlashCommandInteractionEvent event) {
+        event.reply(MSG_CANNOT_RESUME).queue();
+    }
+
+    /**
+     * Stops playback, clears the queue and transitions to {@code ReadyState}.
+     *
+     * @param event the slash command interaction
+     */
+    @Override
+    public void onStop(SlashCommandInteractionEvent event) {
+        queueService.clearQueue();
+        audioPlayerService.getPlayer().stopTrack();
+        event.reply(MSG_STOPPED).queue();
+        player.setState(new ReadyState(player));
+    }
+
+    /**
+     * Skips the current track and advances the queue.
+     *
+     * @param event the slash command interaction
+     */
+    @Override
+    public void onSkip(SlashCommandInteractionEvent event) {
+        queueService.skipCurrentTrack();
+        event.reply(MSG_SKIPPED).queue();
     }
 
     /**
@@ -145,64 +216,19 @@ public class PlayingState extends PlayerState {
         if (queueService.addToQueue(track)) {
             event
                 .getHook()
-                .sendMessage("Added to queue: " + track.getInfo().title)
+                .sendMessage(
+                    MSG_ADDED_SINGLE_FORMAT.formatted(track.getInfo().title)
+                )
                 .queue();
         } else {
             event
                 .getHook()
                 .sendMessage(
-                    "Queue is full (max " +
-                        QueueService.MAX_QUEUE_SIZE +
-                        " tracks)"
+                    MSG_QUEUE_FULL_FORMAT.formatted(
+                        QueueService.MAX_QUEUE_SIZE
+                    )
                 )
                 .queue();
         }
-    }
-
-    /**
-     * Pauses playback and transitions to {@code PausedState}.
-     *
-     * @param event the slash command interaction
-     */
-    @Override
-    public void onPause(SlashCommandInteractionEvent event) {
-        AudioPlayer audioPlayer = audioPlayerService.getPlayer();
-        audioPlayer.setPaused(true);
-        event.reply("Paused the current track").queue();
-        player.setState(new PausedState(player));
-    }
-
-    /**
-     * Replies that resume is not needed while already playing.
-     *
-     * @param event the slash command interaction
-     */
-    @Override
-    public void onResume(SlashCommandInteractionEvent event) {
-        event.reply("Cannot resume: player is already playing.").queue();
-    }
-
-    /**
-     * Stops playback, clears the queue and transitions to {@code ReadyState}.
-     *
-     * @param event the slash command interaction
-     */
-    @Override
-    public void onStop(SlashCommandInteractionEvent event) {
-        queueService.clearQueue();
-        audioPlayerService.getPlayer().stopTrack();
-        event.reply("Stopped playback and cleared the queue").queue();
-        player.setState(new ReadyState(player));
-    }
-
-    /**
-     * Skips the current track and advances the queue.
-     *
-     * @param event the slash command interaction
-     */
-    @Override
-    public void onSkip(SlashCommandInteractionEvent event) {
-        queueService.skipCurrentTrack();
-        event.reply("Skipped to the next track").queue();
     }
 }

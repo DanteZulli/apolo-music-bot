@@ -28,6 +28,16 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PausedStateTest {
 
+    private static final String MSG_CANNOT_PLAY =
+        "Cannot play while paused. Use resume.";
+    private static final String MSG_ALREADY_PAUSED =
+        "Player is already paused!";
+    private static final String MSG_RESUMED = "Resumed the current track";
+    private static final String MSG_STOPPED =
+        "Stopped playback and cleared the queue";
+    private static final String MSG_CANNOT_SKIP =
+        "Cannot skip while paused. Use resume.";
+
     @Mock
     private Player player;
 
@@ -72,7 +82,7 @@ class PausedStateTest {
     void onPlay_repliesCannotPlayWhilePaused() {
         pausedState.onPlay(event);
 
-        verify(event).reply("Cannot play while paused. Use resume.");
+        verify(event).reply(MSG_CANNOT_PLAY);
     }
 
     /**
@@ -85,7 +95,7 @@ class PausedStateTest {
     void onPause_repliesAlreadyPausedMessage() {
         pausedState.onPause(event);
 
-        verify(event).reply("Player is already paused!");
+        verify(event).reply(MSG_ALREADY_PAUSED);
     }
 
     /**
@@ -99,7 +109,7 @@ class PausedStateTest {
         pausedState.onResume(event);
 
         verify(audioPlayer).setPaused(false);
-        verify(event).reply("Resumed the current track");
+        verify(event).reply(MSG_RESUMED);
         verify(player).setState(any(PlayingState.class));
     }
 
@@ -115,7 +125,7 @@ class PausedStateTest {
 
         verify(queueService).clearQueue();
         verify(audioPlayer).stopTrack();
-        verify(event).reply("Stopped playback and cleared the queue");
+        verify(event).reply(MSG_STOPPED);
         verify(player).setState(any(ReadyState.class));
     }
 
@@ -129,6 +139,6 @@ class PausedStateTest {
     void onSkip_repliesCannotSkipWhilePaused() {
         pausedState.onSkip(event);
 
-        verify(event).reply("Cannot skip while paused. Use resume.");
+        verify(event).reply(MSG_CANNOT_SKIP);
     }
 }

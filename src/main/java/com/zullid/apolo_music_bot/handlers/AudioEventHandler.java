@@ -29,6 +29,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AudioEventHandler extends AudioEventAdapter {
 
+    private static final String LOG_NOW_PLAYING_FORMAT = "Now playing: {} ({})";
+    private static final String LOG_PAUSED = "Player paused";
+    private static final String LOG_RESUMED = "Player resumed";
+
     private final QueueService queueService;
     private final AudioPlayerService audioPlayerService;
     private final Player player;
@@ -76,7 +80,7 @@ public class AudioEventHandler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         log.info(
-            "Now playing: {} ({})",
+            LOG_NOW_PLAYING_FORMAT,
             track.getInfo().title,
             track.getInfo().uri
         );
@@ -89,7 +93,7 @@ public class AudioEventHandler extends AudioEventAdapter {
      */
     @Override
     public void onPlayerPause(AudioPlayer player) {
-        log.info("Player paused");
+        log.info(LOG_PAUSED);
     }
 
     /**
@@ -99,6 +103,6 @@ public class AudioEventHandler extends AudioEventAdapter {
      */
     @Override
     public void onPlayerResume(AudioPlayer player) {
-        log.info("Player resumed");
+        log.info(LOG_RESUMED);
     }
 }

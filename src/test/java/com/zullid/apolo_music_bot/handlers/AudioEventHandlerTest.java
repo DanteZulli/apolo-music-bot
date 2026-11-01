@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import com.zullid.apolo_music_bot.player.Player;
 import com.zullid.apolo_music_bot.player.state.ReadyState;
 import com.zullid.apolo_music_bot.services.AudioPlayerService;
@@ -27,6 +28,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith(MockitoExtension.class)
 class AudioEventHandlerTest {
+
+    private static final String TRACK_TITLE = "Test Track";
+    private static final String TRACK_AUTHOR = "test";
+    private static final String TRACK_ID = "id";
 
     @Mock
     private QueueService queueService;
@@ -190,15 +195,14 @@ class AudioEventHandlerTest {
      */
     @Test
     void onTrackStart_logsTrackTitle() {
-        com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo info =
-            new com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo(
-                "Test Track",
-                "test",
-                0L,
-                "id",
-                false,
-                null
-            );
+        AudioTrackInfo info = new AudioTrackInfo(
+            TRACK_TITLE,
+            TRACK_AUTHOR,
+            0L,
+            TRACK_ID,
+            false,
+            null
+        );
         when(track.getInfo()).thenReturn(info);
 
         handler.onTrackStart(audioPlayer, track);

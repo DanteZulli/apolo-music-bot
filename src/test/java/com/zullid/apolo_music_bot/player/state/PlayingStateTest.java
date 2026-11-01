@@ -44,6 +44,40 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PlayingStateTest {
 
+    private static final String OPTION_QUERY = "query";
+    private static final String DEFAULT_QUERY = "test-query";
+    private static final String QUERY_SOME = "some query";
+    private static final String QUERY_SEARCH = "search query";
+    private static final String QUERY_PLAYLIST =
+        "https://youtube.com/playlist?list=PLabc";
+    private static final String QUERY_AUTOMIX = "some song list=RDmix";
+    private static final String QUERY_MISSING = "nonexistent";
+    private static final String QUERY_BAD = "bad query";
+    private static final String TRACK_AUTHOR = "test";
+    private static final String TRACK_ID = "id";
+    private static final String TRACK_ID_1 = "id1";
+    private static final String TRACK_ID_2 = "id2";
+    private static final String TITLE_TEST_SONG = "Test Song";
+    private static final String TITLE_SEARCH_RESULT = "Search Result";
+    private static final String TITLE_SELECTED = "Selected Track";
+    private static final String TITLE_TRACK_1 = "Track 1";
+    private static final String TITLE_TRACK_2 = "Track 2";
+    private static final String TITLE_AUTOMIX = "Auto Mix Track";
+    private static final String ADDED_SINGLE_FORMAT = "Added to queue: %s";
+    private static final String MSG_QUEUE_FULL = "Queue is full (max 50 tracks)";
+    private static final String MSG_ADDED_TWO = "Added 2 tracks to queue";
+    private static final String MSG_ADDED_PARTIAL =
+        "Added 1 of 2 tracks to queue (queue is full, max 50)";
+    private static final String NO_MATCHES_FORMAT = "No matches found for: %s";
+    private static final String LOAD_FAILED_FORMAT = "Error loading track: %s";
+    private static final String LOAD_FAILURE_DETAIL = "Something went wrong";
+    private static final String MSG_PAUSED = "Paused the current track";
+    private static final String MSG_CANNOT_RESUME =
+        "Cannot resume: player is already playing.";
+    private static final String MSG_STOPPED =
+        "Stopped playback and cleared the queue";
+    private static final String MSG_SKIPPED = "Skipped to the next track";
+
     @Mock
     private Player player;
 
@@ -102,8 +136,8 @@ class PlayingStateTest {
 
         lenient().when(event.reply(anyString())).thenReturn(replyAction);
         lenient().when(event.deferReply()).thenReturn(replyAction);
-        lenient().when(event.getOption("query")).thenReturn(optionMapping);
-        lenient().when(optionMapping.getAsString()).thenReturn("test-query");
+        lenient().when(event.getOption(OPTION_QUERY)).thenReturn(optionMapping);
+        lenient().when(optionMapping.getAsString()).thenReturn(DEFAULT_QUERY);
         lenient().when(event.getHook()).thenReturn(hook);
         lenient().doReturn(editAction).when(hook).sendMessage(anyString());
         lenient().doNothing().when(editAction).queue();
@@ -117,13 +151,13 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_defersReplyAndLoadsItem() {
-        when(optionMapping.getAsString()).thenReturn("some query");
+        when(optionMapping.getAsString()).thenReturn(QUERY_SOME);
 
         playingState.onPlay(event);
 
         verify(event).deferReply();
         verify(playerManager).loadItem(
-            eq("some query"),
+            eq(QUERY_SOME),
             handlerCaptor.capture()
         );
     }
@@ -136,12 +170,12 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_trackLoaded_addsToQueueAndReplies() {
-        when(optionMapping.getAsString()).thenReturn("some query");
+        when(optionMapping.getAsString()).thenReturn(QUERY_SOME);
         AudioTrackInfo info = new AudioTrackInfo(
-            "Test Song",
-            "test",
+            TITLE_TEST_SONG,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -149,14 +183,14 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("some query"),
+            eq(QUERY_SOME),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().trackLoaded(track);
 
         verify(queueService).addToQueue(track);
-        verify(hook).sendMessage("Added to queue: Test Song");
+        verify(hook).sendMessage(ADDED_SINGLE_FORMAT.formatted(TITLE_TEST_SONG));
         verify(editAction).queue();
     }
 
@@ -169,12 +203,12 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_trackLoaded_whenQueueFull_repliesQueueFull() {
-        when(optionMapping.getAsString()).thenReturn("some query");
+        when(optionMapping.getAsString()).thenReturn(QUERY_SOME);
         AudioTrackInfo info = new AudioTrackInfo(
-            "Test Song",
-            "test",
+            TITLE_TEST_SONG,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -182,13 +216,13 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("some query"),
+            eq(QUERY_SOME),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track)).thenReturn(false);
         handlerCaptor.getValue().trackLoaded(track);
 
-        verify(hook).sendMessage("Queue is full (max 50 tracks)");
+        verify(hook).sendMessage(MSG_QUEUE_FULL);
         verify(editAction).queue();
     }
 
@@ -200,14 +234,14 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_playlistLoaded_searchResult_addsFirstTrack() {
-        when(optionMapping.getAsString()).thenReturn("search query");
+        when(optionMapping.getAsString()).thenReturn(QUERY_SEARCH);
         when(playlist.isSearchResult()).thenReturn(true);
         when(playlist.getSelectedTrack()).thenReturn(null);
         AudioTrackInfo info = new AudioTrackInfo(
-            "Search Result",
-            "test",
+            TITLE_SEARCH_RESULT,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -216,14 +250,16 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("search query"),
+            eq(QUERY_SEARCH),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);
-        verify(hook).sendMessage("Added to queue: Search Result");
+        verify(hook).sendMessage(
+            ADDED_SINGLE_FORMAT.formatted(TITLE_SEARCH_RESULT)
+        );
     }
 
     /**
@@ -234,13 +270,13 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_playlistLoaded_searchResultWithSelectedTrack_usesSelectedTrack() {
-        when(optionMapping.getAsString()).thenReturn("search query");
+        when(optionMapping.getAsString()).thenReturn(QUERY_SEARCH);
         when(playlist.isSearchResult()).thenReturn(true);
         AudioTrackInfo info = new AudioTrackInfo(
-            "Selected Track",
-            "test",
+            TITLE_SELECTED,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -249,14 +285,16 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("search query"),
+            eq(QUERY_SEARCH),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);
-        verify(hook).sendMessage("Added to queue: Selected Track");
+        verify(hook).sendMessage(
+            ADDED_SINGLE_FORMAT.formatted(TITLE_SELECTED)
+        );
     }
 
     /**
@@ -267,23 +305,21 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_playlistLoaded_regularPlaylist_addsAllTracks() {
-        when(optionMapping.getAsString()).thenReturn(
-            "https://youtube.com/playlist?list=PLabc"
-        );
+        when(optionMapping.getAsString()).thenReturn(QUERY_PLAYLIST);
         when(playlist.isSearchResult()).thenReturn(false);
         AudioTrackInfo info1 = new AudioTrackInfo(
-            "Track 1",
-            "test",
+            TITLE_TRACK_1,
+            TRACK_AUTHOR,
             0L,
-            "id1",
+            TRACK_ID_1,
             false,
             null
         );
         AudioTrackInfo info2 = new AudioTrackInfo(
-            "Track 2",
-            "test",
+            TITLE_TRACK_2,
+            TRACK_AUTHOR,
             0L,
-            "id2",
+            TRACK_ID_2,
             false,
             null
         );
@@ -296,7 +332,7 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("https://youtube.com/playlist?list=PLabc"),
+            eq(QUERY_PLAYLIST),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track1)).thenReturn(true);
@@ -305,7 +341,7 @@ class PlayingStateTest {
 
         verify(queueService).addToQueue(track1);
         verify(queueService).addToQueue(track2);
-        verify(hook).sendMessage("Added 2 tracks to queue");
+        verify(hook).sendMessage(MSG_ADDED_TWO);
     }
 
     /**
@@ -317,23 +353,21 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_playlistLoaded_regularPlaylist_whenQueueFull_reportsPartialAdd() {
-        when(optionMapping.getAsString()).thenReturn(
-            "https://youtube.com/playlist?list=PLabc"
-        );
+        when(optionMapping.getAsString()).thenReturn(QUERY_PLAYLIST);
         when(playlist.isSearchResult()).thenReturn(false);
         AudioTrackInfo info1 = new AudioTrackInfo(
-            "Track 1",
-            "test",
+            TITLE_TRACK_1,
+            TRACK_AUTHOR,
             0L,
-            "id1",
+            TRACK_ID_1,
             false,
             null
         );
         AudioTrackInfo info2 = new AudioTrackInfo(
-            "Track 2",
-            "test",
+            TITLE_TRACK_2,
+            TRACK_AUTHOR,
             0L,
-            "id2",
+            TRACK_ID_2,
             false,
             null
         );
@@ -346,7 +380,7 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("https://youtube.com/playlist?list=PLabc"),
+            eq(QUERY_PLAYLIST),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track1)).thenReturn(true);
@@ -355,9 +389,7 @@ class PlayingStateTest {
 
         verify(queueService).addToQueue(track1);
         verify(queueService).addToQueue(track2);
-        verify(hook).sendMessage(
-            "Added 1 of 2 tracks to queue (queue is full, max 50)"
-        );
+        verify(hook).sendMessage(MSG_ADDED_PARTIAL);
     }
 
     /**
@@ -368,14 +400,14 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_playlistLoaded_automaticMix_addsFirstTrack() {
-        when(optionMapping.getAsString()).thenReturn("some song list=RDmix");
+        when(optionMapping.getAsString()).thenReturn(QUERY_AUTOMIX);
         when(playlist.isSearchResult()).thenReturn(false);
         when(playlist.getSelectedTrack()).thenReturn(null);
         AudioTrackInfo info = new AudioTrackInfo(
-            "Auto Mix Track",
-            "test",
+            TITLE_AUTOMIX,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -384,14 +416,16 @@ class PlayingStateTest {
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("some song list=RDmix"),
+            eq(QUERY_AUTOMIX),
             handlerCaptor.capture()
         );
         when(queueService.addToQueue(track)).thenReturn(true);
         handlerCaptor.getValue().playlistLoaded(playlist);
 
         verify(queueService).addToQueue(track);
-        verify(hook).sendMessage("Added to queue: Auto Mix Track");
+        verify(hook).sendMessage(
+            ADDED_SINGLE_FORMAT.formatted(TITLE_AUTOMIX)
+        );
     }
 
     /**
@@ -402,16 +436,16 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_noMatches_repliesErrorAndTransitionsToReadyState() {
-        when(optionMapping.getAsString()).thenReturn("nonexistent");
+        when(optionMapping.getAsString()).thenReturn(QUERY_MISSING);
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("nonexistent"),
+            eq(QUERY_MISSING),
             handlerCaptor.capture()
         );
         handlerCaptor.getValue().noMatches();
 
-        verify(hook).sendMessage("No matches found for: nonexistent");
+        verify(hook).sendMessage(NO_MATCHES_FORMAT.formatted(QUERY_MISSING));
         verify(player).setState(any(ReadyState.class));
     }
 
@@ -423,17 +457,19 @@ class PlayingStateTest {
      */
     @Test
     void onPlay_loadFailed_repliesErrorAndTransitionsToReadyState() {
-        when(optionMapping.getAsString()).thenReturn("bad query");
-        when(exception.getMessage()).thenReturn("Something went wrong");
+        when(optionMapping.getAsString()).thenReturn(QUERY_BAD);
+        when(exception.getMessage()).thenReturn(LOAD_FAILURE_DETAIL);
 
         playingState.onPlay(event);
         verify(playerManager).loadItem(
-            eq("bad query"),
+            eq(QUERY_BAD),
             handlerCaptor.capture()
         );
         handlerCaptor.getValue().loadFailed(exception);
 
-        verify(hook).sendMessage("Error loading track: Something went wrong");
+        verify(hook).sendMessage(
+            LOAD_FAILED_FORMAT.formatted(LOAD_FAILURE_DETAIL)
+        );
         verify(player).setState(any(ReadyState.class));
     }
 
@@ -448,7 +484,7 @@ class PlayingStateTest {
         playingState.onPause(event);
 
         verify(audioPlayer).setPaused(true);
-        verify(event).reply("Paused the current track");
+        verify(event).reply(MSG_PAUSED);
         verify(player).setState(any(PausedState.class));
     }
 
@@ -462,7 +498,7 @@ class PlayingStateTest {
     void onResume_repliesCannotResumeMessage() {
         playingState.onResume(event);
 
-        verify(event).reply("Cannot resume: player is already playing.");
+        verify(event).reply(MSG_CANNOT_RESUME);
     }
 
     /**
@@ -477,7 +513,7 @@ class PlayingStateTest {
 
         verify(queueService).clearQueue();
         verify(audioPlayer).stopTrack();
-        verify(event).reply("Stopped playback and cleared the queue");
+        verify(event).reply(MSG_STOPPED);
         verify(player).setState(any(ReadyState.class));
     }
 
@@ -492,6 +528,6 @@ class PlayingStateTest {
         playingState.onSkip(event);
 
         verify(queueService).skipCurrentTrack();
-        verify(event).reply("Skipped to the next track");
+        verify(event).reply(MSG_SKIPPED);
     }
 }

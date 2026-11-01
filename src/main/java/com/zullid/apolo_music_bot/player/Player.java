@@ -6,6 +6,8 @@ import com.zullid.apolo_music_bot.services.AudioPlayerService;
 import com.zullid.apolo_music_bot.services.QueueService;
 import com.zullid.apolo_music_bot.services.VoiceChannelService;
 import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -30,6 +32,35 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class Player {
+
+    private static final int MAX_TITLE_LENGTH = 32;
+    private static final int ELLIPSIS_LENGTH = 3;
+    private static final String UNKNOWN_TITLE = "Unknown Title";
+    private static final String TRUNCATED_TITLE_FORMAT = "%s...";
+    private static final String NEED_VOICE_MESSAGE =
+        "You need to be in a voice channel first!";
+    private static final String HELP_MESSAGE = """
+        **Available Commands:**
+
+        `/play <query>` - Plays a song from any source or adds it to the queue
+        `/pause` - Pauses the current playback
+        `/resume` - Resumes the paused playback
+        `/stop` - Stops the playback and clears the queue
+        `/skip` - Skips the current song and moves to the next one in the queue
+        `/queue` - Shows the current queue
+        `/help` - Shows this help message
+        """;
+    private static final String NOW_PLAYING_FORMAT = "**Now Playing:** %s\n\n";
+    private static final String NOW_PLAYING_EMPTY =
+        "**Now Playing:** Nothing\n\n";
+    private static final String QUEUE_HEADER = "**Queue:**\n";
+    private static final String QUEUE_EMPTY_ENTRY = "  (empty)";
+    private static final String QUEUE_ENTRY_FORMAT = "%d. %s";
+    private static final String MORE_SONGS_FORMAT = "... and %d more song(s)";
+    private static final String LINE_SEPARATOR = "\n";
+    private static final String TWO_PART_FORMAT = "%s%s";
+    private static final String LOG_VOICE_PRECHECK_FORMAT =
+        "Voice precheck - botConnected: {} | userInChannel: {}";
 
     private final AudioPlayerService audioPlayerService;
     private final QueueService queueService;
@@ -101,18 +132,7 @@ public class Player {
      * @param event the slash command interaction
      */
     public void help(SlashCommandInteractionEvent event) {
-        String helpMessage = """
-        **Available Commands:**
-
-        `/play <query>` - Plays a song from any source or adds it to the queue
-        `/pause` - Pauses the current playback
-        `/resume` - Resumes the paused playback
-        `/stop` - Stops the playback and clears the queue
-        `/skip` - Skips the current song and moves to the next one in the queue
-        `/queue` - Shows the current queue
-        `/help` - Shows this help message
-        """;
-        event.reply(helpMessage).setEphemeral(true).queue();
+        event.reply(HELP_MESSAGE).setEphemeral(true).queue();
     }
 
     /**
@@ -130,63 +150,49 @@ public class Player {
         var currentTrack = player.getPlayingTrack();
         var queueList = queueService.getQueueList();
 
-        StringBuilder sb = new StringBuilder();
-
         // N = 32 based on calculation to fit 51 tracks (1 playing + 50 queue) within 2000 chars
-        final int MAX_TITLE_LENGTH = 32;
-
+        String nowPlayingPart;
         if (currentTrack != null) {
-            sb.append("**Now Playing:** ")
-                .append(
-                    truncate(currentTrack.getInfo().title, MAX_TITLE_LENGTH)
-                )
-                .append("\n\n");
+            nowPlayingPart = NOW_PLAYING_FORMAT.formatted(
+                truncate(currentTrack.getInfo().title, MAX_TITLE_LENGTH)
+            );
         } else {
-            sb.append("**Now Playing:** Nothing\n\n");
+            nowPlayingPart = NOW_PLAYING_EMPTY;
         }
 
-        sb.append("**Queue:**\n");
-
+        List<String> entries = new ArrayList<>();
         if (queueList.isEmpty()) {
-            sb.append("  (empty)");
+            entries.add(QUEUE_EMPTY_ENTRY);
         } else {
             int maxDisplay = Math.min(
                 QueueService.MAX_QUEUE_SIZE,
                 queueList.size()
             );
             for (int i = 0; i < maxDisplay; i++) {
-                sb.append(i + 1)
-                    .append(". ")
-                    .append(
+                entries.add(
+                    QUEUE_ENTRY_FORMAT.formatted(
+                        i + 1,
                         truncate(
                             queueList.get(i).getInfo().title,
                             MAX_TITLE_LENGTH
                         )
                     )
-                    .append("\n");
+                );
             }
 
             int remaining = queueList.size() - QueueService.MAX_QUEUE_SIZE;
             if (remaining > 0) {
-                sb.append("... and ").append(remaining).append(" more song(s)");
+                entries.add(MORE_SONGS_FORMAT.formatted(remaining));
             }
         }
 
-        event.reply(sb.toString()).setEphemeral(true).queue();
-    }
+        String queueSection = TWO_PART_FORMAT.formatted(
+            QUEUE_HEADER,
+            String.join(LINE_SEPARATOR, entries)
+        );
+        String reply = TWO_PART_FORMAT.formatted(nowPlayingPart, queueSection);
 
-    /**
-     * Truncates a track title to the given maximum length.
-     *
-     * @param text the title to truncate, may be {@code null}
-     * @param maxLength the maximum length including the {@code ...} suffix
-     * @return the truncated title, or {@code "Unknown Title"} when {@code text} is {@code null}
-     */
-    private String truncate(String text, int maxLength) {
-        if (text == null) return "Unknown Title";
-        return text.length() > maxLength
-            ? text.substring(0, maxLength - 3) + "..."
-            : text;
+        event.reply(reply).setEphemeral(true).queue();
     }
 
     /**
@@ -200,7 +206,7 @@ public class Player {
      */
     void checkVoiceChannel(SlashCommandInteractionEvent event) {
         log.debug(
-            "Voice precheck - botConnected: {} | userInChannel: {}",
+            LOG_VOICE_PRECHECK_FORMAT,
             voiceChannelService.isConnected(event.getGuild()),
             event.getMember().getVoiceState() != null &&
                 event.getMember().getVoiceState().inAudioChannel()
@@ -210,7 +216,26 @@ public class Player {
             !voiceChannelService.isConnected(event.getGuild()) &&
             !voiceChannelService.joinVoiceChannel(event.getMember())
         ) {
-            event.reply("You need to be in a voice channel first!").queue();
+            event.reply(NEED_VOICE_MESSAGE).queue();
         }
+    }
+
+    /**
+     * Truncates a track title to the given maximum length.
+     *
+     * @param text the title to truncate, may be {@code null}
+     * @param maxLength the maximum length including the {@code ...} suffix
+     * @return the truncated title, or {@code "Unknown Title"} when {@code text} is {@code null}
+     */
+    private String truncate(String text, int maxLength) {
+        if (text == null) {
+            return UNKNOWN_TITLE;
+        }
+        if (text.length() > maxLength) {
+            return TRUNCATED_TITLE_FORMAT.formatted(
+                text.substring(0, maxLength - ELLIPSIS_LENGTH)
+            );
+        }
+        return text;
     }
 }

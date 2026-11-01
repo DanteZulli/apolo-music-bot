@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,31 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class PlayerCommandConfig {
 
+    private static final String COMMAND_PLAY = "play";
+    private static final String DESC_PLAY =
+        "Plays a song from any source or adds it to the queue";
+    private static final String OPTION_QUERY = "query";
+    private static final String DESC_QUERY_OPTION = "URL";
+    private static final String COMMAND_PAUSE = "pause";
+    private static final String DESC_PAUSE = "Pauses the current playback";
+    private static final String COMMAND_RESUME = "resume";
+    private static final String DESC_RESUME = "Resumes the paused playback";
+    private static final String COMMAND_STOP = "stop";
+    private static final String DESC_STOP =
+        "Stops the playback and clears the queue";
+    private static final String COMMAND_SKIP = "skip";
+    private static final String DESC_SKIP =
+        "Skips the current song and moves to the next one in the queue";
+    private static final String COMMAND_HELP = "help";
+    private static final String DESC_HELP =
+        "Shows available commands and their descriptions";
+    private static final String COMMAND_QUEUE = "queue";
+    private static final String DESC_QUEUE = "Shows the current queue";
+    private static final String LOG_REGISTERED =
+        "Commands registered successfully";
+    private static final String LOG_REGISTER_FAILED_FORMAT =
+        "Error registering commands: {}";
+
     private final JDA jda;
 
     /**
@@ -31,43 +57,38 @@ public class PlayerCommandConfig {
     @PostConstruct
     public void registerCommands() {
         SlashCommandData playCommand = Commands.slash(
-            "play",
-            "Plays a song from any source or adds it to the queue"
-        ).addOption(
-            net.dv8tion.jda.api.interactions.commands.OptionType.STRING,
-            "query",
-            "URL",
-            true
-        );
+            COMMAND_PLAY,
+            DESC_PLAY
+        ).addOption(OptionType.STRING, OPTION_QUERY, DESC_QUERY_OPTION, true);
 
         SlashCommandData pauseCommand = Commands.slash(
-            "pause",
-            "Pauses the current playback"
+            COMMAND_PAUSE,
+            DESC_PAUSE
         );
 
         SlashCommandData resumeCommand = Commands.slash(
-            "resume",
-            "Resumes the paused playback"
+            COMMAND_RESUME,
+            DESC_RESUME
         );
 
         SlashCommandData stopCommand = Commands.slash(
-            "stop",
-            "Stops the playback and clears the queue"
+            COMMAND_STOP,
+            DESC_STOP
         );
 
         SlashCommandData skipCommand = Commands.slash(
-            "skip",
-            "Skips the current song and moves to the next one in the queue"
+            COMMAND_SKIP,
+            DESC_SKIP
         );
 
         SlashCommandData helpCommand = Commands.slash(
-            "help",
-            "Shows available commands and their descriptions"
+            COMMAND_HELP,
+            DESC_HELP
         );
 
         SlashCommandData queueCommand = Commands.slash(
-            "queue",
-            "Shows the current queue"
+            COMMAND_QUEUE,
+            DESC_QUEUE
         );
 
         jda.updateCommands()
@@ -81,10 +102,10 @@ public class PlayerCommandConfig {
                 queueCommand
             )
             .queue(
-                success -> log.info("Commands registered successfully"),
+                success -> log.info(LOG_REGISTERED),
                 error ->
                     log.error(
-                        "Error registering commands: {}",
+                        LOG_REGISTER_FAILED_FORMAT,
                         error.getMessage()
                     )
             );

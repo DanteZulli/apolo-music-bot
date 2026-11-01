@@ -27,7 +27,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DiscordConfig {
 
-    @Value("${discord.bot.token}")
+    private static final String TOKEN_PROPERTY = "${discord.bot.token}";
+
+    @Value(TOKEN_PROPERTY)
     private String token;
 
     /**

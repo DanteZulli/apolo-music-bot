@@ -22,6 +22,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ReadyStateTest {
 
+    private static final String MSG_CANNOT_PAUSE =
+        "Cannot pause: nothing is playing.";
+    private static final String MSG_CANNOT_RESUME =
+        "Cannot resume: nothing is playing.";
+    private static final String MSG_ALREADY_STOPPED = "Already stopped.";
+    private static final String MSG_CANNOT_SKIP =
+        "Cannot skip: nothing is playing.";
+
     @Mock
     private Player player;
 
@@ -66,7 +74,7 @@ class ReadyStateTest {
     void onPause_repliesCannotPauseMessage() {
         readyState.onPause(event);
 
-        verify(event).reply("Cannot pause: nothing is playing.");
+        verify(event).reply(MSG_CANNOT_PAUSE);
     }
 
     /**
@@ -79,7 +87,7 @@ class ReadyStateTest {
     void onResume_repliesCannotResumeMessage() {
         readyState.onResume(event);
 
-        verify(event).reply("Cannot resume: nothing is playing.");
+        verify(event).reply(MSG_CANNOT_RESUME);
     }
 
     /**
@@ -92,7 +100,7 @@ class ReadyStateTest {
     void onStop_repliesAlreadyStoppedMessage() {
         readyState.onStop(event);
 
-        verify(event).reply("Already stopped.");
+        verify(event).reply(MSG_ALREADY_STOPPED);
     }
 
     /**
@@ -105,6 +113,6 @@ class ReadyStateTest {
     void onSkip_repliesCannotSkipMessage() {
         readyState.onSkip(event);
 
-        verify(event).reply("Cannot skip: nothing is playing.");
+        verify(event).reply(MSG_CANNOT_SKIP);
     }
 }

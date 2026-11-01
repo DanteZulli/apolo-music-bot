@@ -24,6 +24,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PlayerCommandListener extends ListenerAdapter {
 
+    private static final String COMMAND_PLAY = "play";
+    private static final String COMMAND_PAUSE = "pause";
+    private static final String COMMAND_STOP = "stop";
+    private static final String COMMAND_SKIP = "skip";
+    private static final String COMMAND_RESUME = "resume";
+    private static final String COMMAND_HELP = "help";
+    private static final String COMMAND_QUEUE = "queue";
+    private static final String MDC_KEY_COMMAND = "command";
+    private static final String MDC_KEY_GUILD_ID = "guildId";
+    private static final String MDC_KEY_USER_ID = "userId";
+    private static final String MSG_UNKNOWN_COMMAND = "Command not recognized";
+    private static final String LOG_UNKNOWN_COMMAND_FORMAT =
+        "Unknown command received: {}";
+
     private final Player player;
 
     /**
@@ -40,36 +54,36 @@ public class PlayerCommandListener extends ListenerAdapter {
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (!event.isFromGuild()) return;
 
-        MDC.put("command", event.getName());
-        MDC.put("guildId", event.getGuild().getId());
-        MDC.put("userId", event.getUser().getId());
+        MDC.put(MDC_KEY_COMMAND, event.getName());
+        MDC.put(MDC_KEY_GUILD_ID, event.getGuild().getId());
+        MDC.put(MDC_KEY_USER_ID, event.getUser().getId());
         try {
             switch (event.getName()) {
-                case "play":
+                case COMMAND_PLAY:
                     player.play(event);
                     break;
-                case "pause":
+                case COMMAND_PAUSE:
                     player.pause(event);
                     break;
-                case "stop":
+                case COMMAND_STOP:
                     player.stop(event);
                     break;
-                case "skip":
+                case COMMAND_SKIP:
                     player.skip(event);
                     break;
-                case "resume":
+                case COMMAND_RESUME:
                     player.resume(event);
                     break;
-                case "help":
+                case COMMAND_HELP:
                     player.help(event);
                     break;
-                case "queue":
+                case COMMAND_QUEUE:
                     player.queue(event);
                     break;
                 default:
-                    log.warn("Unknown command received: {}", event.getName());
+                    log.warn(LOG_UNKNOWN_COMMAND_FORMAT, event.getName());
                     event
-                        .reply("Command not recognized")
+                        .reply(MSG_UNKNOWN_COMMAND)
                         .setEphemeral(true)
                         .queue();
             }

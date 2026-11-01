@@ -33,6 +33,16 @@ public class QueueService {
     /** Maximum number of tracks held in the queue (excluding the playing track). */
     public static final int MAX_QUEUE_SIZE = 50;
 
+    private static final String LOG_PLAYING_IMMEDIATELY_FORMAT =
+        "Playing immediately (queue was idle): {}";
+    private static final String LOG_ADDED_FORMAT = "Added to queue: {}";
+    private static final String LOG_QUEUE_FULL_FORMAT =
+        "Queue is full (max {}), rejecting: {}";
+    private static final String LOG_ADVANCED_FORMAT =
+        "Advanced to next track: {}";
+    private static final String LOG_QUEUE_EMPTY = "Queue is empty, nothing to play";
+    private static final String LOG_QUEUE_CLEARED = "Queue cleared";
+
     private final AudioPlayerService audioPlayerService;
 
     @Getter
@@ -54,17 +64,17 @@ public class QueueService {
         if (audioPlayerService.getPlayer().getPlayingTrack() == null) {
             audioPlayerService.getPlayer().playTrack(track);
             log.debug(
-                "Playing immediately (queue was idle): {}",
+                LOG_PLAYING_IMMEDIATELY_FORMAT,
                 track.getInfo().title
             );
             return true;
         }
         if (queue.offer(track)) {
-            log.debug("Added to queue: {}", track.getInfo().title);
+            log.debug(LOG_ADDED_FORMAT, track.getInfo().title);
             return true;
         }
         log.warn(
-            "Queue is full (max {}), rejecting: {}",
+            LOG_QUEUE_FULL_FORMAT,
             MAX_QUEUE_SIZE,
             track.getInfo().title
         );
@@ -92,9 +102,9 @@ public class QueueService {
 
         if (nextTrack != null) {
             player.playTrack(nextTrack);
-            log.debug("Advanced to next track: {}", nextTrack.getInfo().title);
+            log.debug(LOG_ADVANCED_FORMAT, nextTrack.getInfo().title);
         } else {
-            log.debug("Queue is empty, nothing to play");
+            log.debug(LOG_QUEUE_EMPTY);
         }
     }
 
@@ -104,7 +114,7 @@ public class QueueService {
     public void clearQueue() {
         queue.clear();
         audioPlayerService.getPlayer().stopTrack();
-        log.info("Queue cleared");
+        log.info(LOG_QUEUE_CLEARED);
     }
 
     /**

@@ -25,6 +25,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class AudioPlayerService {
 
+    private static final String LOG_INITIALIZED =
+        "AudioPlayer initialized successfully";
+
     @Getter
     private AudioPlayerManager playerManager;
 
@@ -46,7 +49,7 @@ public class AudioPlayerService {
 
         player = playerManager.createPlayer();
 
-        log.info("AudioPlayer initialized successfully");
+        log.info(LOG_INITIALIZED);
     }
 
     /**

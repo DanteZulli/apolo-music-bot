@@ -14,6 +14,13 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
  */
 public class ReadyState extends PlayerState {
 
+    private static final String MSG_CANNOT_PAUSE = "Cannot pause: nothing is playing.";
+    private static final String MSG_CANNOT_RESUME =
+        "Cannot resume: nothing is playing.";
+    private static final String MSG_ALREADY_STOPPED = "Already stopped.";
+    private static final String MSG_CANNOT_SKIP =
+        "Cannot skip: nothing is playing.";
+
     /**
      * Creates a ready state for the given player.
      *
@@ -41,7 +48,7 @@ public class ReadyState extends PlayerState {
      */
     @Override
     public void onPause(SlashCommandInteractionEvent event) {
-        event.reply("Cannot pause: nothing is playing.").queue();
+        event.reply(MSG_CANNOT_PAUSE).queue();
     }
 
     /**
@@ -51,7 +58,7 @@ public class ReadyState extends PlayerState {
      */
     @Override
     public void onResume(SlashCommandInteractionEvent event) {
-        event.reply("Cannot resume: nothing is playing.").queue();
+        event.reply(MSG_CANNOT_RESUME).queue();
     }
 
     /**
@@ -61,7 +68,7 @@ public class ReadyState extends PlayerState {
      */
     @Override
     public void onStop(SlashCommandInteractionEvent event) {
-        event.reply("Already stopped.").queue();
+        event.reply(MSG_ALREADY_STOPPED).queue();
     }
 
     /**
@@ -71,6 +78,6 @@ public class ReadyState extends PlayerState {
      */
     @Override
     public void onSkip(SlashCommandInteractionEvent event) {
-        event.reply("Cannot skip: nothing is playing.").queue();
+        event.reply(MSG_CANNOT_SKIP).queue();
     }
 }

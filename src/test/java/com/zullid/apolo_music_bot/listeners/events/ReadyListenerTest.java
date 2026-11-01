@@ -22,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ReadyListenerTest {
 
+    private static final String SELF_TAG = "ApoloBot#1234";
+
     @Mock
     private ReadyEvent event;
 
@@ -42,7 +44,7 @@ class ReadyListenerTest {
     void onReady_logsReadyMessage() {
         when(event.getJDA()).thenReturn(jda);
         when(jda.getSelfUser()).thenReturn(selfUser);
-        when(selfUser.getAsTag()).thenReturn("ApoloBot#1234");
+        when(selfUser.getAsTag()).thenReturn(SELF_TAG);
 
         ReadyListener listener = new ReadyListener();
         listener.onReady(event);

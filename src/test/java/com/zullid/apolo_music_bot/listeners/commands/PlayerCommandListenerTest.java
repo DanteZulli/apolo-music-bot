@@ -28,6 +28,21 @@ import org.slf4j.MDC;
 @ExtendWith(MockitoExtension.class)
 class PlayerCommandListenerTest {
 
+    private static final String GUILD_ID = "guild-123";
+    private static final String USER_ID = "user-456";
+    private static final String COMMAND_PLAY = "play";
+    private static final String COMMAND_PAUSE = "pause";
+    private static final String COMMAND_RESUME = "resume";
+    private static final String COMMAND_STOP = "stop";
+    private static final String COMMAND_SKIP = "skip";
+    private static final String COMMAND_HELP = "help";
+    private static final String COMMAND_QUEUE = "queue";
+    private static final String COMMAND_UNKNOWN = "unknown";
+    private static final String MSG_UNKNOWN_COMMAND = "Command not recognized";
+    private static final String MDC_KEY_COMMAND = "command";
+    private static final String MDC_KEY_GUILD_ID = "guildId";
+    private static final String MDC_KEY_USER_ID = "userId";
+
     @Mock
     private Player player;
 
@@ -49,9 +64,9 @@ class PlayerCommandListenerTest {
     void setUp() {
         listener = new PlayerCommandListener(player);
         lenient().when(event.getGuild()).thenReturn(guild);
-        lenient().when(guild.getId()).thenReturn("guild-123");
+        lenient().when(guild.getId()).thenReturn(GUILD_ID);
         lenient().when(event.getUser()).thenReturn(user);
-        lenient().when(user.getId()).thenReturn("user-456");
+        lenient().when(user.getId()).thenReturn(USER_ID);
     }
 
     /**
@@ -64,7 +79,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_playCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("play");
+        when(event.getName()).thenReturn(COMMAND_PLAY);
 
         listener.onSlashCommandInteraction(event);
 
@@ -81,7 +96,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_pauseCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("pause");
+        when(event.getName()).thenReturn(COMMAND_PAUSE);
 
         listener.onSlashCommandInteraction(event);
 
@@ -98,7 +113,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_resumeCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("resume");
+        when(event.getName()).thenReturn(COMMAND_RESUME);
 
         listener.onSlashCommandInteraction(event);
 
@@ -115,7 +130,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_stopCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("stop");
+        when(event.getName()).thenReturn(COMMAND_STOP);
 
         listener.onSlashCommandInteraction(event);
 
@@ -132,7 +147,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_skipCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("skip");
+        when(event.getName()).thenReturn(COMMAND_SKIP);
 
         listener.onSlashCommandInteraction(event);
 
@@ -149,7 +164,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_helpCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("help");
+        when(event.getName()).thenReturn(COMMAND_HELP);
 
         listener.onSlashCommandInteraction(event);
 
@@ -166,7 +181,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_queueCommand_delegatesToPlayer() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("queue");
+        when(event.getName()).thenReturn(COMMAND_QUEUE);
 
         listener.onSlashCommandInteraction(event);
 
@@ -183,7 +198,7 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_unknownCommand_repliesNotRecognized() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("unknown");
+        when(event.getName()).thenReturn(COMMAND_UNKNOWN);
 
         net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction replyAction =
             mock(
@@ -195,7 +210,7 @@ class PlayerCommandListenerTest {
         listener.onSlashCommandInteraction(event);
 
         verify(player, never()).play(any());
-        verify(event).reply("Command not recognized");
+        verify(event).reply(MSG_UNKNOWN_COMMAND);
     }
 
     /**
@@ -225,13 +240,13 @@ class PlayerCommandListenerTest {
     @Test
     void onSlashCommandInteraction_clearsLoggingContextAfterHandling() {
         when(event.isFromGuild()).thenReturn(true);
-        when(event.getName()).thenReturn("play");
+        when(event.getName()).thenReturn(COMMAND_PLAY);
 
         listener.onSlashCommandInteraction(event);
 
         verify(player).play(event);
-        assertNull(MDC.get("command"));
-        assertNull(MDC.get("guildId"));
-        assertNull(MDC.get("userId"));
+        assertNull(MDC.get(MDC_KEY_COMMAND));
+        assertNull(MDC.get(MDC_KEY_GUILD_ID));
+        assertNull(MDC.get(MDC_KEY_USER_ID));
     }
 }

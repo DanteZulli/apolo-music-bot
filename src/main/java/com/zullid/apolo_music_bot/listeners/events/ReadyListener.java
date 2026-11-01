@@ -19,6 +19,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReadyListener extends ListenerAdapter {
 
+    private static final String LOG_READY_FORMAT =
+        "Apolo is ready! Connected as {}";
+
     /**
      * Logs the bot tag once JDA is fully connected and ready.
      *
@@ -27,7 +30,7 @@ public class ReadyListener extends ListenerAdapter {
     @Override
     public void onReady(ReadyEvent event) {
         log.info(
-            "Apolo is ready! Connected as {}",
+            LOG_READY_FORMAT,
             event.getJDA().getSelfUser().getAsTag()
         );
     }

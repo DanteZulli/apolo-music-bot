@@ -27,6 +27,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VoiceChannelService {
 
+    private static final String LOG_USER_NOT_IN_VOICE_FORMAT =
+        "User {} is not in a voice channel";
+    private static final String LOG_ALREADY_CONNECTED =
+        "Already connected to voice channel, skipping join";
+    private static final String LOG_JOINING_FORMAT =
+        "Joining voice channel: {} (guild: {})";
+    private static final String LOG_JOINED_FORMAT =
+        "Bot joined voice channel: {}";
+    private static final String LOG_LEFT_FORMAT =
+        "Bot left voice channel in guild: {}";
+
     private final AudioPlayerService audioPlayerService;
 
     /**
@@ -46,14 +57,14 @@ public class VoiceChannelService {
             member.getVoiceState() == null ||
             !member.getVoiceState().inAudioChannel()
         ) {
-            log.warn("User {} is not in a voice channel", member.getId());
+            log.warn(LOG_USER_NOT_IN_VOICE_FORMAT, member.getId());
             return false;
         }
 
         AudioManager audioManager = member.getGuild().getAudioManager();
 
         if (audioManager.isConnected()) {
-            log.debug("Already connected to voice channel, skipping join");
+            log.debug(LOG_ALREADY_CONNECTED);
             return true;
         }
 
@@ -63,7 +74,7 @@ public class VoiceChannelService {
             .asVoiceChannel();
 
         log.info(
-            "Joining voice channel: {} (guild: {})",
+            LOG_JOINING_FORMAT,
             voiceChannel.getName(),
             member.getGuild().getName()
         );
@@ -74,7 +85,7 @@ public class VoiceChannelService {
         audioManager.openAudioConnection(voiceChannel);
         audioManager.setSelfDeafened(true);
 
-        log.info("Bot joined voice channel: {}", voiceChannel.getName());
+        log.info(LOG_JOINED_FORMAT, voiceChannel.getName());
         return true;
     }
 
@@ -92,7 +103,7 @@ public class VoiceChannelService {
         if (audioManager.isConnected()) {
             audioManager.setSelfDeafened(false);
             audioManager.closeAudioConnection();
-            log.info("Bot left voice channel in guild: {}", guild.getName());
+            log.info(LOG_LEFT_FORMAT, guild.getName());
         }
     }
 

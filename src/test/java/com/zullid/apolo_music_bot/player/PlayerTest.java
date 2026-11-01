@@ -43,6 +43,41 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PlayerTest {
 
+    private static final String HELP_HEADER = "**Available Commands:**";
+    private static final String HELP_PLAY =
+        "`/play <query>` - Plays a song from any source or adds it to the queue";
+    private static final String HELP_PAUSE = "`/pause` - Pauses the current playback";
+    private static final String HELP_RESUME =
+        "`/resume` - Resumes the paused playback";
+    private static final String HELP_STOP =
+        "`/stop` - Stops the playback and clears the queue";
+    private static final String HELP_SKIP =
+        "`/skip` - Skips the current song and moves to the next one in the queue";
+    private static final String HELP_QUEUE = "`/queue` - Shows the current queue";
+    private static final String HELP_HELP = "`/help` - Shows this help message";
+    private static final String EMPTY_QUEUE_MESSAGE =
+        "**Now Playing:** Nothing\n\n**Queue:**\n  (empty)";
+    private static final String NEED_VOICE_MESSAGE =
+        "You need to be in a voice channel first!";
+    private static final String TRACK_AUTHOR = "test";
+    private static final String TRACK_ID = "id";
+    private static final String TRACK_ID_2 = "id2";
+    private static final String TITLE_CURRENT_SONG = "Current Song";
+    private static final String NOW_PLAYING_CURRENT =
+        "**Now Playing:** Current Song";
+    private static final String TITLE_PLAYING = "Playing";
+    private static final String TITLE_NEXT_SONG = "Next Song";
+    private static final String QUEUE_ENTRY_NEXT = "1. Next Song";
+    private static final String LONG_TITLE =
+        "This is a very long song title that should be truncated because it exceeds the maximum length";
+    private static final String TRUNCATED_TITLE =
+        "This is a very long song titl...";
+    private static final String TRACK_TITLE_FORMAT = "Track %d";
+    private static final String TRACK_ID_FORMAT = "id%d";
+    private static final String MORE_SONGS_MESSAGE = "... and 5 more song(s)";
+    private static final String UNKNOWN_TITLE = "Unknown Title";
+    private static final String QUEUE_ENTRY_UNKNOWN = "1. Unknown Title";
+
     @Mock
     private AudioPlayerService audioPlayerService;
 
@@ -185,28 +220,14 @@ class PlayerTest {
                     @Override
                     public boolean matches(String message) {
                         return (
-                            message.contains("**Available Commands:**") &&
-                            message.contains(
-                                "`/play <query>` - Plays a song from any source or adds it to the queue"
-                            ) &&
-                            message.contains(
-                                "`/pause` - Pauses the current playback"
-                            ) &&
-                            message.contains(
-                                "`/resume` - Resumes the paused playback"
-                            ) &&
-                            message.contains(
-                                "`/stop` - Stops the playback and clears the queue"
-                            ) &&
-                            message.contains(
-                                "`/skip` - Skips the current song and moves to the next one in the queue"
-                            ) &&
-                            message.contains(
-                                "`/queue` - Shows the current queue"
-                            ) &&
-                            message.contains(
-                                "`/help` - Shows this help message"
-                            )
+                            message.contains(HELP_HEADER) &&
+                            message.contains(HELP_PLAY) &&
+                            message.contains(HELP_PAUSE) &&
+                            message.contains(HELP_RESUME) &&
+                            message.contains(HELP_STOP) &&
+                            message.contains(HELP_SKIP) &&
+                            message.contains(HELP_QUEUE) &&
+                            message.contains(HELP_HELP)
                         );
                     }
                 }
@@ -232,9 +253,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.equals(
-                            "**Now Playing:** Nothing\n\n**Queue:**\n  (empty)"
-                        );
+                        return message.equals(EMPTY_QUEUE_MESSAGE);
                     }
                 }
             )
@@ -254,7 +273,7 @@ class PlayerTest {
         when(voiceChannelService.isConnected(guild)).thenReturn(false);
         when(member.getVoiceState()).thenReturn(null);
         player.checkVoiceChannel(event);
-        verify(event).reply("You need to be in a voice channel first!");
+        verify(event).reply(NEED_VOICE_MESSAGE);
         verify(replyAction).queue();
     }
 
@@ -288,7 +307,7 @@ class PlayerTest {
         when(voiceState.inAudioChannel()).thenReturn(true);
         when(voiceChannelService.joinVoiceChannel(member)).thenReturn(false);
         player.checkVoiceChannel(event);
-        verify(event).reply("You need to be in a voice channel first!");
+        verify(event).reply(NEED_VOICE_MESSAGE);
         verify(replyAction).queue();
     }
 
@@ -317,10 +336,10 @@ class PlayerTest {
     @Test
     void queue_withPlayingTrack_showsNowPlaying() {
         AudioTrackInfo info = new AudioTrackInfo(
-            "Current Song",
-            "test",
+            TITLE_CURRENT_SONG,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -336,9 +355,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.contains(
-                            "**Now Playing:** Current Song"
-                        );
+                        return message.contains(NOW_PLAYING_CURRENT);
                     }
                 }
             )
@@ -354,10 +371,10 @@ class PlayerTest {
     @Test
     void queue_withTracks_showsQueueList() {
         AudioTrackInfo info = new AudioTrackInfo(
-            "Playing",
-            "test",
+            TITLE_PLAYING,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -366,10 +383,10 @@ class PlayerTest {
         when(audioPlayer.getPlayingTrack()).thenReturn(playing);
 
         AudioTrackInfo q1 = new AudioTrackInfo(
-            "Next Song",
-            "test",
+            TITLE_NEXT_SONG,
+            TRACK_AUTHOR,
             0L,
-            "id2",
+            TRACK_ID_2,
             false,
             null
         );
@@ -384,7 +401,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.contains("1. Next Song");
+                        return message.contains(QUEUE_ENTRY_NEXT);
                     }
                 }
             )
@@ -399,13 +416,12 @@ class PlayerTest {
      */
     @Test
     void queue_withLongTitle_truncatesToMaxLength() {
-        String longTitle =
-            "This is a very long song title that should be truncated because it exceeds the maximum length";
+        String longTitle = LONG_TITLE;
         AudioTrackInfo info = new AudioTrackInfo(
             longTitle,
-            "test",
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -421,9 +437,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.contains(
-                            "This is a very long song titl..."
-                        );
+                        return message.contains(TRUNCATED_TITLE);
                     }
                 }
             )
@@ -439,10 +453,10 @@ class PlayerTest {
     @Test
     void queue_withFiftyPlusTracks_showsRemainingCount() {
         AudioTrackInfo info = new AudioTrackInfo(
-            "Playing",
-            "test",
+            TITLE_PLAYING,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -453,10 +467,10 @@ class PlayerTest {
         List<AudioTrack> tracks = new ArrayList<>();
         for (int i = 0; i < 55; i++) {
             AudioTrackInfo qi = new AudioTrackInfo(
-                "Track " + i,
-                "test",
+                TRACK_TITLE_FORMAT.formatted(i),
+                TRACK_AUTHOR,
                 0L,
-                "id" + i,
+                TRACK_ID_FORMAT.formatted(i),
                 false,
                 null
             );
@@ -473,7 +487,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.contains("... and 5 more song(s)");
+                        return message.contains(MORE_SONGS_MESSAGE);
                     }
                 }
             )
@@ -489,10 +503,10 @@ class PlayerTest {
     @Test
     void queue_withNullTrackTitle_showsUnknownTitle() {
         AudioTrackInfo info = new AudioTrackInfo(
-            "Playing",
-            "test",
+            TITLE_PLAYING,
+            TRACK_AUTHOR,
             0L,
-            "id",
+            TRACK_ID,
             false,
             null
         );
@@ -502,9 +516,9 @@ class PlayerTest {
 
         AudioTrackInfo nullInfo = new AudioTrackInfo(
             null,
-            "test",
+            TRACK_AUTHOR,
             0L,
-            "id2",
+            TRACK_ID_2,
             false,
             null
         );
@@ -519,7 +533,7 @@ class PlayerTest {
                 new ArgumentMatcher<String>() {
                     @Override
                     public boolean matches(String message) {
-                        return message.contains("1. Unknown Title");
+                        return message.contains(QUEUE_ENTRY_UNKNOWN);
                     }
                 }
             )

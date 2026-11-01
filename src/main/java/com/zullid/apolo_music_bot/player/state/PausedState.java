@@ -17,6 +17,16 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
  */
 public class PausedState extends PlayerState {
 
+    private static final String MSG_CANNOT_PLAY =
+        "Cannot play while paused. Use resume.";
+    private static final String MSG_ALREADY_PAUSED =
+        "Player is already paused!";
+    private static final String MSG_RESUMED = "Resumed the current track";
+    private static final String MSG_STOPPED =
+        "Stopped playback and cleared the queue";
+    private static final String MSG_CANNOT_SKIP =
+        "Cannot skip while paused. Use resume.";
+
     private final AudioPlayerService audioPlayerService;
     private final QueueService queueService;
 
@@ -38,7 +48,7 @@ public class PausedState extends PlayerState {
      */
     @Override
     public void onPlay(SlashCommandInteractionEvent event) {
-        event.reply("Cannot play while paused. Use resume.").queue();
+        event.reply(MSG_CANNOT_PLAY).queue();
     }
 
     /**
@@ -48,7 +58,7 @@ public class PausedState extends PlayerState {
      */
     @Override
     public void onPause(SlashCommandInteractionEvent event) {
-        event.reply("Player is already paused!").queue();
+        event.reply(MSG_ALREADY_PAUSED).queue();
     }
 
     /**
@@ -60,7 +70,7 @@ public class PausedState extends PlayerState {
     public void onResume(SlashCommandInteractionEvent event) {
         AudioPlayer audioPlayer = audioPlayerService.getPlayer();
         audioPlayer.setPaused(false);
-        event.reply("Resumed the current track").queue();
+        event.reply(MSG_RESUMED).queue();
         player.setState(new PlayingState(player));
     }
 
@@ -73,7 +83,7 @@ public class PausedState extends PlayerState {
     public void onStop(SlashCommandInteractionEvent event) {
         queueService.clearQueue();
         audioPlayerService.getPlayer().stopTrack();
-        event.reply("Stopped playback and cleared the queue").queue();
+        event.reply(MSG_STOPPED).queue();
         player.setState(new ReadyState(player));
     }
 
@@ -84,6 +94,6 @@ public class PausedState extends PlayerState {
      */
     @Override
     public void onSkip(SlashCommandInteractionEvent event) {
-        event.reply("Cannot skip while paused. Use resume.").queue();
+        event.reply(MSG_CANNOT_SKIP).queue();
     }
 }

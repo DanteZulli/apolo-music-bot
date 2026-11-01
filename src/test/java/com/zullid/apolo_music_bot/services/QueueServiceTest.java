@@ -26,6 +26,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class QueueServiceTest {
 
+    private static final String TRACK_AUTHOR = "test";
+    private static final String TRACK_ID = "id";
+    private static final String TITLE_TEST_SONG = "Test Song";
+    private static final String TITLE_PLAYING = "Playing";
+    private static final String TITLE_QUEUED = "Queued";
+    private static final String TITLE_QUEUED_FORMAT = "Queued %d";
+    private static final String TITLE_OVERFLOW = "Overflow";
+    private static final String TITLE_CURRENT = "Current";
+    private static final String TITLE_NEXT = "Next";
+    private static final String TITLE_SONG_1 = "Song 1";
+    private static final String TITLE_SONG_2 = "Song 2";
+    private static final String TITLE_SONG = "Song";
+
     @Mock
     private AudioPlayerService audioPlayerService;
 
@@ -46,26 +59,6 @@ class QueueServiceTest {
     }
 
     /**
-     * Creates a mocked track with the given title.
-     *
-     * @param title the track title
-     * @return the mocked track
-     */
-    private AudioTrack createMockTrack(String title) {
-        AudioTrack track = mock(AudioTrack.class);
-        AudioTrackInfo info = new AudioTrackInfo(
-            title,
-            "test",
-            0L,
-            "id",
-            false,
-            null
-        );
-        lenient().doReturn(info).when(track).getInfo();
-        return track;
-    }
-
-    /**
      * Tests that idle playback starts immediately.
      * <p>
      * Given no track playing, when a track is added, then it is played directly.
@@ -73,7 +66,7 @@ class QueueServiceTest {
      */
     @Test
     void addToQueue_whenNoTrackPlaying_playsTrackImmediately() {
-        AudioTrack track = createMockTrack("Test Song");
+        AudioTrack track = createMockTrack(TITLE_TEST_SONG);
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(null);
 
@@ -90,8 +83,8 @@ class QueueServiceTest {
      */
     @Test
     void addToQueue_whenTrackIsPlaying_addsToQueue() {
-        AudioTrack playingTrack = createMockTrack("Playing");
-        AudioTrack queuedTrack = createMockTrack("Queued");
+        AudioTrack playingTrack = createMockTrack(TITLE_PLAYING);
+        AudioTrack queuedTrack = createMockTrack(TITLE_QUEUED);
 
         lenient().when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         lenient().when(audioPlayer.getPlayingTrack()).thenReturn(playingTrack);
@@ -111,15 +104,19 @@ class QueueServiceTest {
      */
     @Test
     void addToQueue_whenQueueFull_rejectsTrack() {
-        AudioTrack playingTrack = createMockTrack("Playing");
+        AudioTrack playingTrack = createMockTrack(TITLE_PLAYING);
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(playingTrack);
 
         for (int i = 0; i < QueueService.MAX_QUEUE_SIZE; i++) {
-            assertTrue(queueService.addToQueue(createMockTrack("Queued " + i)));
+            assertTrue(
+                queueService.addToQueue(
+                    createMockTrack(TITLE_QUEUED_FORMAT.formatted(i))
+                )
+            );
         }
 
-        assertFalse(queueService.addToQueue(createMockTrack("Overflow")));
+        assertFalse(queueService.addToQueue(createMockTrack(TITLE_OVERFLOW)));
         assertEquals(QueueService.MAX_QUEUE_SIZE, queueService.getQueueSize());
     }
 
@@ -137,8 +134,8 @@ class QueueServiceTest {
             .thenReturn(currentlyPlayingTrack)
             .thenReturn(null);
 
-        AudioTrack currentTrack = createMockTrack("Current");
-        AudioTrack nextTrack = createMockTrack("Next");
+        AudioTrack currentTrack = createMockTrack(TITLE_CURRENT);
+        AudioTrack nextTrack = createMockTrack(TITLE_NEXT);
         queueService.addToQueue(currentTrack);
         queueService.addToQueue(nextTrack);
 
@@ -159,8 +156,8 @@ class QueueServiceTest {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(currentlyPlayingTrack);
 
-        queueService.addToQueue(createMockTrack("Song 1"));
-        queueService.addToQueue(createMockTrack("Song 2"));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_1));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_2));
         assertEquals(2, queueService.getQueueSize());
 
         queueService.clearQueue();
@@ -180,8 +177,8 @@ class QueueServiceTest {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(currentlyPlayingTrack);
 
-        queueService.addToQueue(createMockTrack("Song 1"));
-        queueService.addToQueue(createMockTrack("Song 2"));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_1));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_2));
 
         List<AudioTrack> list = queueService.getQueueList();
 
@@ -212,7 +209,7 @@ class QueueServiceTest {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(currentlyPlayingTrack);
 
-        queueService.addToQueue(createMockTrack("Song"));
+        queueService.addToQueue(createMockTrack(TITLE_SONG));
 
         assertFalse(queueService.isQueueEmpty());
     }
@@ -228,8 +225,8 @@ class QueueServiceTest {
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(currentlyPlayingTrack);
 
-        queueService.addToQueue(createMockTrack("Song 1"));
-        queueService.addToQueue(createMockTrack("Song 2"));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_1));
+        queueService.addToQueue(createMockTrack(TITLE_SONG_2));
 
         assertEquals(2, queueService.getQueueSize());
     }
@@ -257,8 +254,8 @@ class QueueServiceTest {
      */
     @Test
     void playNextTrack_whenQueueHasTracks_playsNextTrack() {
-        AudioTrack playingTrack = createMockTrack("Playing");
-        AudioTrack queuedTrack = createMockTrack("Queued");
+        AudioTrack playingTrack = createMockTrack(TITLE_PLAYING);
+        AudioTrack queuedTrack = createMockTrack(TITLE_QUEUED);
 
         when(audioPlayerService.getPlayer()).thenReturn(audioPlayer);
         when(audioPlayer.getPlayingTrack()).thenReturn(playingTrack);
@@ -269,5 +266,25 @@ class QueueServiceTest {
 
         verify(audioPlayer).playTrack(queuedTrack);
         assertEquals(0, queueService.getQueueSize());
+    }
+
+    /**
+     * Creates a mocked track with the given title.
+     *
+     * @param title the track title
+     * @return the mocked track
+     */
+    private AudioTrack createMockTrack(String title) {
+        AudioTrack track = mock(AudioTrack.class);
+        AudioTrackInfo info = new AudioTrackInfo(
+            title,
+            TRACK_AUTHOR,
+            0L,
+            TRACK_ID,
+            false,
+            null
+        );
+        lenient().doReturn(info).when(track).getInfo();
+        return track;
     }
 }
